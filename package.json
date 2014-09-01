@@ -1,0 +1,32 @@
+{
+  "name": "plain-text-data-to-json",
+  "version": "0.0.1",
+  "description": "Transform a simple plain-text database to JSON",
+  "license": "MIT",
+  "keywords": [
+    "plain-text",
+    "database",
+    "json"
+  ],
+  "author": "Titus Wormer <tituswormer@gmail.com>",
+  "devDependencies": {
+    "eslint": "^0.7.4",
+    "istanbul": "^0.3.0",
+    "jscs": "^1.5.3",
+    "mocha": "^1.20.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wooorm/plain-text-data-to-json.git"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/_mocha --reporter spec --check-leaks -u exports spec/plain-text-data-to-json.spec.js",
+    "test-travis": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha --report lcovonly -- --reporter spec --check-leaks -u exports spec/plain-text-data-to-json.spec.js",
+    "lint": "npm run lint-api && npm run lint-test && npm run lint-style",
+    "lint-api": "node_modules/.bin/eslint index.js --env node --rule 'quotes: [2, single]'",
+    "lint-test": "node_modules/.bin/eslint spec/plain-text-data-to-json.spec.js --env node --env mocha --rule 'quotes: [2, single]'",
+    "lint-style": "node_modules/.bin/jscs index.js spec/plain-text-data-to-json.spec.js --reporter=inline",
+    "coverage": "node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- -- spec/plain-text-data-to-json.spec.js",
+    "make": "npm run lint && npm run coverage"
+  }
+}

@@ -1,6 +1,6 @@
 # plain-text-data-to-json [![Build Status](https://travis-ci.org/wooorm/plain-text-data-to-json.svg?branch=master)](https://travis-ci.org/wooorm/plain-text-data-to-json) [![Coverage Status](https://img.shields.io/coveralls/wooorm/plain-text-data-to-json.svg)](https://coveralls.io/r/wooorm/plain-text-data-to-json?branch=master)
 
-Write a “database” or simple (word, phrase) list in plain text, and transform it (in a build step) to JSON.
+Write a “database” or simple (word, phrase) list in plain-text, and transform it (in a build step) to JSON.
 
 ## Installation
 
@@ -22,17 +22,17 @@ fs.writeFileSync('./output.json', JSON.stringify(data));
 
 ## API
 
-### plainTextDataToJSON(inputPath, outputPath)
+### plainTextDataToJSON(value)
 
-Reads the `inputPath` as “plain text”, transforms it into JSON, writes the JSON to `outputPath`, and returns the JSON.
+Transforms the given value (string) to JSON.
 
 ## Why?
 
-I found myself rewriting a simple transformation over and over. This (verbosely) named project fixes that. It might not be useful or to simple for others, but suites my use cases.
+I found myself rewriting a simple transformation over and over. This (verbosely named) project fixes that. It might not be useful, or to simple for others, but suites my use cases.
 
-## plain text?
+## Plain-text?
 
-The term plain text might be confusing. It’s actually more of some (sparingly specified) standard.
+The term plain-text might be confusing. It’s actually more of some (sparingly specified) standard.
 
 ### Comments:
 

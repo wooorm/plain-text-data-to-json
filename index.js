@@ -2,14 +2,16 @@
 
 var isOwnProperty = Object.prototype.hasOwnProperty;
 
-function stripComments(value) {
-    var index = value.indexOf('%');
+function stripComments(token) {
+    return function (value) {
+        var index = value.indexOf(token);
 
-    if (index !== -1) {
-        value = value.substr(0, index);
-    }
+        if (index !== -1) {
+            value = value.substr(0, index);
+        }
 
-    return value;
+        return value;
+    };
 }
 
 function trimWhiteSpace(value) {
@@ -20,17 +22,19 @@ function isNonEmpty(value) {
     return Boolean(value);
 }
 
-function toPropertyValuePairs(value) {
-    var values, result;
+function toPropertyValuePairs(token) {
+    return function (value) {
+        var values, result;
 
-    values = value.split(':');
-    result = [trimWhiteSpace(values.shift())];
+        values = value.split(token);
+        result = [trimWhiteSpace(values.shift())];
 
-    if (values.length) {
-        result.push(trimWhiteSpace(values.join(':')));
-    }
+        if (values.length) {
+            result.push(trimWhiteSpace(values.join(token)));
+        }
 
-    return result;
+        return result;
+    };
 }
 
 function sortOnFirstIndex(a, b) {
@@ -47,17 +51,20 @@ function propertyValuePairsToObject(pairs) {
     return value;
 }
 
-function textToJSON(value) {
-    var lines = value.split('\n'),
-        propertyOrValues = {},
-        isPropertyValuePair, pairs, values;
+function textToJSON(value, options) {
+    var propertyOrValues = {},
+        lines, isPropertyValuePair, pairs, values;
 
-    lines = lines
-        .map(stripComments)
+    if (!options) {
+        options = {};
+    }
+
+    lines = value.split('\n')
+        .map(stripComments(options.comment || '%'))
         .map(trimWhiteSpace)
         .filter(isNonEmpty);
 
-    pairs = lines.map(toPropertyValuePairs);
+    pairs = lines.map(toPropertyValuePairs(options.delimiter || ':'));
 
     pairs.forEach(function (line, index) {
         var currentLineIsPropertyValuePair = line.length === 2;

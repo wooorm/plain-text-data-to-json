@@ -22,9 +22,13 @@ fs.writeFileSync('./output.json', JSON.stringify(data));
 
 ## API
 
-### plainTextDataToJSON(value)
+### plainTextDataToJSON(value, optionalOptions)
 
 Transforms the given value (string) to JSON.
+Don’t like the default comment and property-value pair delimiters? Specify your own:
+
+- `comment` (String) — defaults to '%');
+- `delimiter` (String) — defaults to ':').
 
 ## Why?
 
@@ -36,7 +40,7 @@ The term plain-text might be confusing. It’s actually more of some (sparingly 
 
 ### Comments:
 
-Use a percentage sign to specify a comment. The comment will last until the end of line.
+Use a percentage sign (by default) to specify a comment. The comment will last until the end of line.
 
 ```
 % This is a completely commented line.
@@ -81,7 +85,7 @@ Yields:
 
 ### Property-value pairs
 
-If a line includes a colon (`:`), an the library returns an object.
+If a line includes a colon (by default), an the library returns an object.
 
 ```
 unicorn : magic creature
@@ -112,7 +116,7 @@ Yields:
 Some errors are thrown when malformed “plain-text” is found, such as:
 - when lines both with and without colons exist;
 - in arrays, when duplicate values exist;
-- in objects, when duplicate properties exist;
+- in objects, when duplicate properties exist.
 
 ## License
 

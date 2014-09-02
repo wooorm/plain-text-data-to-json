@@ -13,6 +13,8 @@ describe('textToJSON', function () {
 });
 
 describe('Comments', function () {
+    var customTokens;
+
     it('should strip line comments', function () {
         var data = textToJSON(
             '% This is a completely commented line.\n' +
@@ -29,6 +31,31 @@ describe('Comments', function () {
 
         assert(stringify(data) === '["unicorn"]');
     });
+
+    customTokens = {
+        'comment' : '#'
+    };
+
+    it('should strip line comments based on a given token', function () {
+        var data = textToJSON(
+            '# This is a completely commented line.\n' +
+            'unicorn',
+            customTokens
+        );
+
+        assert(stringify(data) === '["unicorn"]');
+    });
+
+    it('should strip partial line comments based on a given token',
+        function () {
+            var data = textToJSON(
+                'unicorn # This is a partially commented line.',
+                customTokens
+            );
+
+            assert(stringify(data) === '["unicorn"]');
+        }
+    );
 });
 
 describe('White space', function () {
@@ -71,23 +98,51 @@ describe('End-of-file end-of-line', function () {
 });
 
 describe('Property-value pairs', function () {
-    it('should return an object when a file contains colons', function () {
-        assert(
-            stringify(textToJSON('unicorn : magic creature')) ===
-            '{"unicorn":"magic creature"}'
-        );
+    it('should return an object when a file contains pair delimiters',
+        function () {
+            assert(
+                stringify(textToJSON('unicorn : magic creature')) ===
+                '{"unicorn":"magic creature"}'
+            );
 
-        assert(stringify(textToJSON(
-                'unicorn : magic creature\n' +
-                '\trainbow:double\t\n' +
-                'doge\t:\tso scare'
-            )) === JSON.stringify({
-                'unicorn' : 'magic creature',
-                'rainbow' : 'double',
-                'doge' : 'so scare'
-            })
-        );
-    });
+            assert(stringify(textToJSON(
+                    'unicorn : magic creature\n' +
+                    '\trainbow:double\t\n' +
+                    'doge\t:\tso scare'
+                )) === JSON.stringify({
+                    'unicorn' : 'magic creature',
+                    'rainbow' : 'double',
+                    'doge' : 'so scare'
+                })
+            );
+        }
+    );
+
+    it('should return an object when a file contains pair delimiters ' +
+        'based on a given token', function () {
+            var customTokens = {
+                'delimiter' : '\t'
+            };
+
+            assert(
+                stringify(
+                    textToJSON('unicorn	magic creature', customTokens)
+                ) === '{"unicorn":"magic creature"}'
+            );
+
+            assert(stringify(textToJSON(
+                    'unicorn \t magic creature\n' +
+                    '\trainbow\tdouble\t\n' +
+                    'doge\t\t\tso scare',
+                    customTokens
+                )) === JSON.stringify({
+                    'unicorn' : 'magic creature',
+                    'rainbow' : 'double',
+                    'doge' : 'so scare'
+                })
+            );
+        }
+    );
 });
 
 describe('Values', function () {

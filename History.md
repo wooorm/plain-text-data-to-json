@@ -1,4 +1,13 @@
 
+n.n.n / 2014-09-24
+==================
+
+ * Add `fix` mode for `forgiving`
+ * Add no-comment mode
+ * Add option, `forgiving`, to not throw on warnings
+ * Add better error messages
+ * Update eslint
+
 0.1.0 / 2014-09-02
 ==================
 

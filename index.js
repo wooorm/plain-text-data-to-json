@@ -59,6 +59,10 @@ function textToJSON(value, options) {
         options = {};
     }
 
+    if (options.log === null || options.log === undefined) {
+        options.log = true;
+    }
+
     lines = value.split('\n')
         .map(stripComments(options.comment || '%'))
         .map(trimWhiteSpace)
@@ -85,15 +89,27 @@ function textToJSON(value, options) {
             line[0] in propertyOrValues &&
             isOwnProperty.call(propertyOrValues, line[0])
         ) {
-            throw new Error(
-                'Error at `' + line + '`: ' +
-                'Duplicate data found. ' +
-                'Make sure, in objects, no duplicate properties exist, in ' +
-                'arrays, no duplicate values.'
-            );
+            if (
+                !options.forgiving ||
+                (
+                    currentLineIsPropertyValuePair &&
+                    line[1] !== propertyOrValues[line[0]]
+                )
+            ) {
+                throw new Error(
+                    'Error at `' + line + '`: ' +
+                    'Duplicate data found. ' +
+                    'Make sure, in objects, no duplicate properties exist;' +
+                    'in arrays, no duplicate values.'
+                );
+            }
+
+            if (options.log) {
+                console.log('Ignoring duplicate key for `' + line[0] + '`');
+            }
         }
 
-        propertyOrValues[line[0]] = true;
+        propertyOrValues[line[0]] = line[1];
     });
 
     if (isPropertyValuePair) {

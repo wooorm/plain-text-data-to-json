@@ -172,8 +172,8 @@ describe('Mixed property-value pairs and values', function () {
     );
 });
 
-describe('Property-value pairs', function () {
-    it('should throw when duplicate properties exist',
+describe('Values', function () {
+    it('should throw when duplicate values exist',
         function () {
             assert.throws(function () {
                 textToJSON(
@@ -184,16 +184,166 @@ describe('Property-value pairs', function () {
             }, /`unicorn/);
         }
     );
+
+    it('should NOT throw when duplicate values exist and `forgiving` is ' +
+        '`true`',
+        function () {
+            assert.doesNotThrow(function () {
+                textToJSON(
+                    'unicorn\n' +
+                    'doge\n' +
+                    'unicorn\n', {
+                        'forgiving' : true
+                    }
+                );
+            });
+        }
+    );
+
+    it('should log for duplicate values when `forgiving` is `true`',
+        function () {
+            var log,
+                isCalled;
+
+            log = console.log;
+
+            global.console.log = function () {
+                isCalled = true;
+            };
+
+            textToJSON(
+                'unicorn\n' +
+                'doge\n' +
+                'unicorn\n', {
+                    'forgiving' : true
+                }
+            );
+
+            assert(isCalled === true);
+
+            global.console.log = log;
+        }
+    );
+
+    it('should NOT log for duplicate keys when `forgiving` is `true`' +
+        ' and `log` is `false`',
+        function () {
+            var log,
+                isCalled;
+
+            log = console.log;
+
+            /* istanbul ignore next */
+            global.console.log = function () {
+                isCalled = true;
+            };
+
+            textToJSON(
+                'unicorn\n' +
+                'doge\n' +
+                'unicorn\n', {
+                    'forgiving' : true,
+                    'log' : false
+                }
+            );
+
+            assert(isCalled !== true);
+
+            global.console.log = log;
+        }
+    );
 });
 
-describe('Values', function () {
-    it('should throw when duplicate values exist',
+describe('Property-value pairs', function () {
+    it('should throw when duplicate keys exist',
         function () {
             assert.throws(function () {
                 textToJSON(
                     'doge: so scare\n' +
                     'unicorn: magic creature\n' +
-                    'doge: so scare\n'
+                    'doge: double\n'
+                );
+            }, /`doge/);
+        }
+    );
+
+    it('should NOT throw for duplicate keys when `forgiving` is `true`',
+        function () {
+            assert.doesNotThrow(function () {
+                textToJSON(
+                    'doge: so scare\n' +
+                    'unicorn: magic creature\n' +
+                    'doge: so scare\n', {
+                        'forgiving' : true
+                    }
+                );
+            });
+        }
+    );
+
+    it('should log for duplicate keys when `forgiving` is `true`',
+        function () {
+            var log,
+                isCalled;
+
+            log = console.log;
+
+            global.console.log = function () {
+                isCalled = true;
+            };
+
+            textToJSON(
+                'doge: so scare\n' +
+                'unicorn: magic creature\n' +
+                'doge: so scare\n', {
+                    'forgiving' : true
+                }
+            );
+
+            assert(isCalled === true);
+
+            global.console.log = log;
+        }
+    );
+
+    it('should NOT log for duplicate keys when `forgiving` is `true`' +
+        ' and `log` is `false`',
+        function () {
+            var log,
+                isCalled;
+
+            log = console.log;
+
+            /* istanbul ignore next */
+            global.console.log = function () {
+                isCalled = true;
+            };
+
+            textToJSON(
+                'doge: so scare\n' +
+                'unicorn: magic creature\n' +
+                'doge: so scare\n', {
+                    'forgiving' : true,
+                    'log' : false
+                }
+            );
+
+            assert(isCalled !== true);
+
+            global.console.log = log;
+        }
+    );
+
+    it('should throw when duplicate key-values exist when `forgiving` ' +
+        'is `true`',
+        function () {
+            assert.throws(function () {
+                textToJSON(
+                    'doge: so scare\n' +
+                    'unicorn: magic creature\n' +
+                    'doge: so scrare\n', {
+                        'forgiving' : true
+                    }
                 );
             }, /`doge/);
         }

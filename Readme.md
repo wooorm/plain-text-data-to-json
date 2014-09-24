@@ -22,13 +22,15 @@ fs.writeFileSync('./output.json', JSON.stringify(data));
 
 ## API
 
-### plainTextDataToJSON(value, optionalOptions)
+### plainTextDataToJSON(value, options?)
 
 Transforms the given value (string) to JSON.
 Don’t like the default comment and property-value pair delimiters? Specify your own:
 
-- `comment` (String) — defaults to '%');
-- `delimiter` (String) — defaults to ':').
+- `comment` (string) — defaults to `'%'`;
+- `delimiter` (string) — defaults to `':'`;
+- `forgiving` (boolean?) — when `true`, doesn't throw for duplicate keys;
+- `log` (boolean?), default: `true` — Whether to log when `forgiving` ignores an error.
 
 ## Why?
 
@@ -115,8 +117,8 @@ Yields:
 
 Some errors are thrown when malformed “plain-text” is found, such as:
 - when lines both with and without colons exist;
-- in arrays, when duplicate values exist;
-- in objects, when duplicate properties exist.
+- in arrays, when duplicate values exist (unless `forgiving: true`);
+- in objects, when duplicate properties exist (unless `forgiving: true`).
 
 ## License
 

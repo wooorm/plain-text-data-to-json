@@ -101,6 +101,7 @@ function textToJSON(value, options) {
             if (
                 !options.forgiving ||
                 (
+                    options.forgiving === true &&
                     currentLineIsPropertyValuePair &&
                     line[1] !== propertyOrValues[line[0]]
                 )
@@ -114,7 +115,19 @@ function textToJSON(value, options) {
             }
 
             if (options.log) {
-                console.log('Ignoring duplicate key for `' + line[0] + '`');
+                if (
+                    options.forgiving === 'fix' &&
+                    propertyOrValues[line[0]] !== line[1]
+                ) {
+                    console.log(
+                        'Overwriting `' + propertyOrValues[line[0]] + '` ' +
+                        'to `' + line[1] + '` for `' + line[0] + '`'
+                    );
+                } else {
+                    console.log(
+                        'Ignoring duplicate key for `' + line[0] + '`'
+                    );
+                }
             }
         }
 

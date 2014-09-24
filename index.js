@@ -74,6 +74,7 @@ function textToJSON(value, options) {
         } else {
             if (currentLineIsPropertyValuePair !== isPropertyValuePair) {
                 throw new Error(
+                    'Error at `' + line + '`: ' +
                     'Both property-value pairs and array values found. ' +
                     'Make sure either exists.'
                 );
@@ -85,6 +86,7 @@ function textToJSON(value, options) {
             isOwnProperty.call(propertyOrValues, line[0])
         ) {
             throw new Error(
+                'Error at `' + line + '`: ' +
                 'Duplicate data found. ' +
                 'Make sure, in objects, no duplicate properties exist, in ' +
                 'arrays, no duplicate values.'

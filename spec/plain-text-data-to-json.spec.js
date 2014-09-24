@@ -167,7 +167,7 @@ describe('Mixed property-value pairs and values', function () {
         function () {
             assert.throws(function () {
                 textToJSON('unicorn\nrainbow: double');
-            });
+            }, /`rainbow/);
         }
     );
 });
@@ -181,7 +181,7 @@ describe('Property-value pairs', function () {
                     'doge\n' +
                     'unicorn\n'
                 );
-            });
+            }, /`unicorn/);
         }
     );
 });
@@ -195,7 +195,7 @@ describe('Values', function () {
                     'unicorn: magic creature\n' +
                     'doge: so scare\n'
                 );
-            });
+            }, /`doge/);
         }
     );
 });

@@ -63,8 +63,17 @@ function textToJSON(value, options) {
         options.log = true;
     }
 
-    lines = value.split('\n')
-        .map(stripComments(options.comment || '%'))
+    if (options.comment === null || options.comment === undefined) {
+        options.comment = '%';
+    }
+
+    lines = value.split('\n');
+
+    if (options.comment) {
+        lines = lines.map(stripComments(options.comment));
+    }
+
+    lines = lines
         .map(trimWhiteSpace)
         .filter(isNonEmpty);
 

@@ -32,6 +32,19 @@ describe('Comments', function () {
         assert(stringify(data) === '["unicorn"]');
     });
 
+    it('should NOT strip comments when `comment` is `false`', function () {
+        var data = textToJSON(
+            'unicorn % This is a partially commented line.', {
+                'comment' : false
+            }
+        );
+
+        assert(
+            stringify(data) ===
+            '["unicorn % This is a partially commented line."]'
+        );
+    });
+
     customTokens = {
         'comment' : '#'
     };

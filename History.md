@@ -1,4 +1,17 @@
 
+n.n.n / 2014-10-30
+==================
+
+ * Add flat badges to `Readme.md`
+ * Refactor module
+ * Refactor test
+ * Add `.eslintrc`
+ * Refactor `.jscs.json`
+ * Refactor to disallow space after object keys
+ * Move `spec/plain-text-data-to-json.spec.js` to `test.js`
+ * Update `.gitignore`, `.npmignore`
+ * Update eslint, mocha
+
 0.1.1 / 2014-09-24
 ==================
 

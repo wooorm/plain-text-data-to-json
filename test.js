@@ -35,7 +35,7 @@ describe('Comments', function () {
     it('should NOT strip comments when `comment` is `false`', function () {
         var data = textToJSON(
             'unicorn % This is a partially commented line.', {
-                'comment' : false
+                'comment': false
             }
         );
 
@@ -46,7 +46,7 @@ describe('Comments', function () {
     });
 
     customTokens = {
-        'comment' : '#'
+        'comment': '#'
     };
 
     it('should strip line comments based on a given token', function () {
@@ -123,9 +123,9 @@ describe('Property-value pairs', function () {
                     '\trainbow:double\t\n' +
                     'doge\t:\tso scare'
                 )) === JSON.stringify({
-                    'unicorn' : 'magic creature',
-                    'rainbow' : 'double',
-                    'doge' : 'so scare'
+                    'unicorn': 'magic creature',
+                    'rainbow': 'double',
+                    'doge': 'so scare'
                 })
             );
         }
@@ -134,7 +134,7 @@ describe('Property-value pairs', function () {
     it('should return an object when a file contains pair delimiters ' +
         'based on a given token', function () {
             var customTokens = {
-                'delimiter' : '\t'
+                'delimiter': '\t'
             };
 
             assert(
@@ -149,9 +149,9 @@ describe('Property-value pairs', function () {
                     'doge\t\t\tso scare',
                     customTokens
                 )) === JSON.stringify({
-                    'unicorn' : 'magic creature',
-                    'rainbow' : 'double',
-                    'doge' : 'so scare'
+                    'unicorn': 'magic creature',
+                    'rainbow': 'double',
+                    'doge': 'so scare'
                 })
             );
         }
@@ -206,7 +206,7 @@ describe('Values', function () {
                     'unicorn\n' +
                     'doge\n' +
                     'unicorn\n', {
-                        'forgiving' : true
+                        'forgiving': true
                     }
                 );
             });
@@ -228,7 +228,7 @@ describe('Values', function () {
                 'unicorn\n' +
                 'doge\n' +
                 'unicorn\n', {
-                    'forgiving' : true
+                    'forgiving': true
                 }
             );
 
@@ -255,8 +255,8 @@ describe('Values', function () {
                 'unicorn\n' +
                 'doge\n' +
                 'unicorn\n', {
-                    'forgiving' : true,
-                    'log' : false
+                    'forgiving': true,
+                    'log': false
                 }
             );
 
@@ -287,7 +287,7 @@ describe('Property-value pairs', function () {
                     'doge: so scare\n' +
                     'unicorn: magic creature\n' +
                     'doge: so scare\n', {
-                        'forgiving' : true
+                        'forgiving': true
                     }
                 );
             });
@@ -309,7 +309,7 @@ describe('Property-value pairs', function () {
                 'doge: so scare\n' +
                 'unicorn: magic creature\n' +
                 'doge: so scare\n', {
-                    'forgiving' : true
+                    'forgiving': true
                 }
             );
 
@@ -336,8 +336,8 @@ describe('Property-value pairs', function () {
                 'doge: so scare\n' +
                 'unicorn: magic creature\n' +
                 'doge: so scare\n', {
-                    'forgiving' : true,
-                    'log' : false
+                    'forgiving': true,
+                    'log': false
                 }
             );
 
@@ -355,7 +355,7 @@ describe('Property-value pairs', function () {
                     'doge: so scare\n' +
                     'unicorn: magic creature\n' +
                     'doge: so scare\n', {
-                        'forgiving' : 'fix'
+                        'forgiving': 'fix'
                     }
                 );
             });
@@ -372,13 +372,13 @@ describe('Property-value pairs', function () {
                     'doge: so scare\n' +
                     'unicorn: magic creature\n' +
                     'doge: rainbows\n', {
-                        'forgiving' : 'fix'
+                        'forgiving': 'fix'
                     }
                 );
 
                 assert(stringify(data) === stringify({
-                    'doge' : 'rainbows',
-                    'unicorn' : 'magic creature'
+                    'doge': 'rainbows',
+                    'unicorn': 'magic creature'
                 }));
             });
         }
@@ -399,7 +399,7 @@ describe('Property-value pairs', function () {
                 'doge: so scare\n' +
                 'unicorn: magic creature\n' +
                 'doge: so scare\n', {
-                    'forgiving' : 'fix'
+                    'forgiving': 'fix'
                 }
             );
 
@@ -426,8 +426,8 @@ describe('Property-value pairs', function () {
                 'doge: so scare\n' +
                 'unicorn: magic creature\n' +
                 'doge: so scare\n', {
-                    'forgiving' : 'fix',
-                    'log' : false
+                    'forgiving': 'fix',
+                    'log': false
                 }
             );
 

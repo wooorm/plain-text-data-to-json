@@ -1,22 +1,38 @@
 'use strict';
 
-var textToJSON, assert, stringify;
+/**
+ * Dependencies.
+ */
+
+var textToJSON,
+    assert;
 
 textToJSON = require('./');
 assert = require('assert');
+
+/**
+ * Cached methods.
+ */
+
+var stringify;
+
 stringify = JSON.stringify;
 
+/**
+ * Tests.
+ */
+
 describe('textToJSON', function () {
-    it('should be a Function', function () {
+    it('should be a `function`', function () {
         assert(typeof textToJSON === 'function');
     });
 });
 
 describe('Comments', function () {
-    var customTokens;
-
     it('should strip line comments', function () {
-        var data = textToJSON(
+        var data;
+
+        data = textToJSON(
             '% This is a completely commented line.\n' +
             'unicorn'
         );
@@ -25,7 +41,9 @@ describe('Comments', function () {
     });
 
     it('should strip partial line comments', function () {
-        var data = textToJSON(
+        var data;
+
+        data = textToJSON(
             'unicorn % This is a partially commented line.'
         );
 
@@ -33,7 +51,9 @@ describe('Comments', function () {
     });
 
     it('should NOT strip comments when `comment` is `false`', function () {
-        var data = textToJSON(
+        var data;
+
+        data = textToJSON(
             'unicorn % This is a partially commented line.', {
                 'comment': false
             }
@@ -45,15 +65,14 @@ describe('Comments', function () {
         );
     });
 
-    customTokens = {
-        'comment': '#'
-    };
-
     it('should strip line comments based on a given token', function () {
-        var data = textToJSON(
+        var data;
+
+        data = textToJSON(
             '# This is a completely commented line.\n' +
-            'unicorn',
-            customTokens
+            'unicorn', {
+                'comment': '#'
+            }
         );
 
         assert(stringify(data) === '["unicorn"]');
@@ -61,9 +80,12 @@ describe('Comments', function () {
 
     it('should strip partial line comments based on a given token',
         function () {
-            var data = textToJSON(
-                'unicorn # This is a partially commented line.',
-                customTokens
+            var data;
+
+            data = textToJSON(
+                'unicorn # This is a partially commented line.', {
+                    'comment': '#'
+                }
             );
 
             assert(stringify(data) === '["unicorn"]');
@@ -73,13 +95,17 @@ describe('Comments', function () {
 
 describe('White space', function () {
     it('should trim affixed white space', function () {
-        var data = textToJSON('  \tunicorn');
+        var data;
+
+        data = textToJSON('  \tunicorn');
 
         assert(stringify(data) === '["unicorn"]');
     });
 
     it('should trim suffixed white space', function () {
-        var data = textToJSON('unicorn  \t');
+        var data;
+
+        data = textToJSON('unicorn  \t');
 
         assert(stringify(data) === '["unicorn"]');
     });
@@ -87,13 +113,17 @@ describe('White space', function () {
 
 describe('Empty lines', function () {
     it('should remove empty lines', function () {
-        var data = textToJSON('\n\n\nunicorn\r\n');
+        var data;
+
+        data = textToJSON('\n\n\nunicorn\r\n');
 
         assert(stringify(data) === '["unicorn"]');
     });
 
     it('should remove empty (white space only) lines', function () {
-        var data = textToJSON(
+        var data;
+
+        data = textToJSON(
             '  \t  \n' +
             'unicorn'
         );
@@ -132,23 +162,20 @@ describe('Property-value pairs', function () {
     );
 
     it('should return an object when a file contains pair delimiters ' +
-        'based on a given token', function () {
-            var customTokens = {
-                'delimiter': '\t'
-            };
-
+        'based on a given token',
+        function () {
             assert(
-                stringify(
-                    textToJSON('unicorn	magic creature', customTokens)
-                ) === '{"unicorn":"magic creature"}'
+                stringify(textToJSON('unicorn	magic creature', {
+                    'delimiter': '\t'
+                })) === '{"unicorn":"magic creature"}'
             );
 
             assert(stringify(textToJSON(
-                    'unicorn \t magic creature\n' +
-                    '\trainbow\tdouble\t\n' +
-                    'doge\t\t\tso scare',
-                    customTokens
-                )) === JSON.stringify({
+                'unicorn \t magic creature\n' +
+                '\trainbow\tdouble\t\n' +
+                'doge\t\t\tso scare', {
+                    'delimiter': '\t'
+                })) === JSON.stringify({
                     'unicorn': 'magic creature',
                     'rainbow': 'double',
                     'doge': 'so scare'

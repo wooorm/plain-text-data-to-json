@@ -1,10 +1,32 @@
 'use strict';
 
-var isOwnProperty = Object.prototype.hasOwnProperty;
+/**
+ * Cached methods.
+ */
+
+var has;
+
+has = Object.prototype.hasOwnProperty;
+
+/**
+ * Strip comments factory.
+ *
+ * @param {string} token
+ * @return {function(string): string}
+ */
 
 function stripComments(token) {
+    /**
+     * Strip comments.
+     *
+     * @param {string} value - Line.
+     * @return {string} Value with comments removed.
+     */
+
     return function (value) {
-        var index = value.indexOf(token);
+        var index;
+
+        index = value.indexOf(token);
 
         if (index !== -1) {
             value = value.substr(0, index);
@@ -14,17 +36,48 @@ function stripComments(token) {
     };
 }
 
+/**
+ * Remove white space at start and end.
+ *
+ * @param {string} value
+ * @return {string} Value with initial and final white
+ *   space removed.
+ */
+
 function trimWhiteSpace(value) {
     return value.trim();
 }
+
+/**
+ * Whether or not `value` is empty.
+ *
+ * @param {string} value
+ * @return {boolean}
+ */
 
 function isNonEmpty(value) {
     return Boolean(value);
 }
 
+/**
+ * Factory to transform lines to property--value tuples.
+ *
+ * @param {string} token
+ * @return {function(string): {0: string, 1: string}}
+ */
+
 function toPropertyValuePairs(token) {
+    /**
+     * Transform `value` to a property--value tuple.
+     *
+     * @param {string} value - Line.
+     * @return {{0: string, 1: string}} Array with
+     *  property at `0` and value at `1`.
+     */
+
     return function (value) {
-        var values, result;
+        var values,
+            result;
 
         values = value.split(token);
         result = [trimWhiteSpace(values.shift())];
@@ -37,23 +90,54 @@ function toPropertyValuePairs(token) {
     };
 }
 
+/**
+ * Sort on the first (`0`) index.
+ *
+ * To be passed to `Array#sort()`.
+ *
+ * @param {{0: *}} a
+ * @param {{0: *}} b
+ */
+
 function sortOnFirstIndex(a, b) {
     return b[0] - a[0];
 }
 
+/**
+ * Transform a list of key--value tuples to an object.
+ *
+ * @param {Array.<{0: string, 1: string}>} pairs
+ * @return {Object.<string, string>}
+ */
+
 function propertyValuePairsToObject(pairs) {
-    var value = {};
+    var values;
+
+    values = {};
 
     pairs.forEach(function (pair) {
-        value[pair[0]] = pair[1];
+        values[pair[0]] = pair[1];
     });
 
-    return value;
+    return values;
 }
 
+/**
+ * Transform a string into an array or object of values.
+ *
+ * @param {string} value
+ * @param {Object?} options
+ * @return {Object.<string, string>|Array.<string>}
+ */
+
 function textToJSON(value, options) {
-    var propertyOrValues = {},
-        lines, isPropertyValuePair, pairs, values;
+    var propertyOrValues,
+        lines,
+        isPropertyValuePair,
+        pairs,
+        values;
+
+    propertyOrValues = {};
 
     if (!options) {
         options = {};
@@ -73,14 +157,14 @@ function textToJSON(value, options) {
         lines = lines.map(stripComments(options.comment));
     }
 
-    lines = lines
-        .map(trimWhiteSpace)
-        .filter(isNonEmpty);
+    lines = lines.map(trimWhiteSpace).filter(isNonEmpty);
 
     pairs = lines.map(toPropertyValuePairs(options.delimiter || ':'));
 
     pairs.forEach(function (line, index) {
-        var currentLineIsPropertyValuePair = line.length === 2;
+        var currentLineIsPropertyValuePair;
+
+        currentLineIsPropertyValuePair = line.length === 2;
 
         if (index === 0) {
             isPropertyValuePair = currentLineIsPropertyValuePair;
@@ -94,10 +178,7 @@ function textToJSON(value, options) {
             }
         }
 
-        if (
-            line[0] in propertyOrValues &&
-            isOwnProperty.call(propertyOrValues, line[0])
-        ) {
+        if (has.call(propertyOrValues, line[0])) {
             if (
                 !options.forgiving ||
                 (
@@ -136,6 +217,7 @@ function textToJSON(value, options) {
 
     if (isPropertyValuePair) {
         pairs.sort(sortOnFirstIndex);
+
         values = propertyValuePairsToObject(pairs);
     } else {
         lines.sort();

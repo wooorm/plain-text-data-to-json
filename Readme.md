@@ -1,4 +1,4 @@
-# plain-text-data-to-json [![Build Status](https://travis-ci.org/wooorm/plain-text-data-to-json.svg?branch=master)](https://travis-ci.org/wooorm/plain-text-data-to-json) [![Coverage Status](https://img.shields.io/coveralls/wooorm/plain-text-data-to-json.svg)](https://coveralls.io/r/wooorm/plain-text-data-to-json?branch=master)
+# plain-text-data-to-json [![Build Status](https://img.shields.io/travis/wooorm/plain-text-data-to-json.svg?style=flat)](https://travis-ci.org/wooorm/plain-text-data-to-json) [![Coverage Status](https://img.shields.io/coveralls/wooorm/plain-text-data-to-json.svg?style=flat)](https://coveralls.io/r/wooorm/plain-text-data-to-json?branch=master)
 
 Write a “database” or simple (word, phrase) list in plain-text, and transform it (in a build step) to JSON.
 

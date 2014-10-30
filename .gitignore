@@ -1,5 +1,4 @@
-node_modules
-components
 .DS_Store
-coverage
-spec/browser.spec.js
+*.log
+node_modules/
+coverage/

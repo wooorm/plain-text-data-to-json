@@ -1,2 +1,7 @@
-coverage
-.travis.yml
+.*
+*.log
+coverage/
+node_modules/
+spec/
+component.json
+History.md

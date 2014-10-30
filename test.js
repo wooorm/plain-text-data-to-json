@@ -2,7 +2,7 @@
 
 var textToJSON, assert, stringify;
 
-textToJSON = require('..');
+textToJSON = require('./');
 assert = require('assert');
 stringify = JSON.stringify;
 

@@ -1,6 +1,14 @@
 'use strict';
 
 /**
+ * A property--value pair tuple.
+ *
+ * @typedef {Array} Pair
+ * @typedef {string} Pair.0
+ * @typedef {string} Pair.1
+ */
+
+/*
  * Cached methods.
  */
 
@@ -14,7 +22,6 @@ has = Object.prototype.hasOwnProperty;
  * @param {string} token
  * @return {function(string): string}
  */
-
 function stripComments(token) {
     /**
      * Strip comments.
@@ -22,7 +29,6 @@ function stripComments(token) {
      * @param {string} value - Line.
      * @return {string} Value with comments removed.
      */
-
     return function (value) {
         var index;
 
@@ -43,7 +49,6 @@ function stripComments(token) {
  * @return {string} Value with initial and final white
  *   space removed.
  */
-
 function trimWhiteSpace(value) {
     return value.trim();
 }
@@ -54,7 +59,6 @@ function trimWhiteSpace(value) {
  * @param {string} value
  * @return {boolean}
  */
-
 function isNonEmpty(value) {
     return Boolean(value);
 }
@@ -63,18 +67,15 @@ function isNonEmpty(value) {
  * Factory to transform lines to property--value tuples.
  *
  * @param {string} token
- * @return {function(string): {0: string, 1: string}}
+ * @return {function(string): Pair}
  */
-
 function toPropertyValuePairs(token) {
     /**
      * Transform `value` to a property--value tuple.
      *
      * @param {string} value - Line.
-     * @return {{0: string, 1: string}} Array with
-     *  property at `0` and value at `1`.
+     * @return {Pair}
      */
-
     return function (value) {
         var values,
             result;
@@ -95,21 +96,20 @@ function toPropertyValuePairs(token) {
  *
  * To be passed to `Array#sort()`.
  *
- * @param {{0: *}} a
- * @param {{0: *}} b
+ * @param {Pair} a
+ * @param {Pair} b
+ * @return {number}
  */
-
 function sortOnFirstIndex(a, b) {
     return a[0].charCodeAt(0) - b[0].charCodeAt(0);
 }
 
 /**
- * Transform a list of key--value tuples to an object.
+ * Transform a list of property--value tuples to an object.
  *
- * @param {Array.<{0: string, 1: string}>} pairs
+ * @param {Array.<Pair>} pairs
  * @return {Object.<string, string>}
  */
-
 function propertyValuePairsToObject(pairs) {
     var values;
 
@@ -126,10 +126,13 @@ function propertyValuePairsToObject(pairs) {
  * Transform a string into an array or object of values.
  *
  * @param {string} value
- * @param {Object?} options
+ * @param {?Object} options
+ * @param {?boolean} options.log
+ * @param {?(string|boolean)} options.comment
+ * @param {?(string|boolean)} options.delimiter
+ * @param {?(string|boolean)} options.fix
  * @return {Object.<string, string>|Array.<string>}
  */
-
 function textToJSON(value, options) {
     var propertyOrValues,
         lines,

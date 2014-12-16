@@ -247,6 +247,9 @@ describe('Values', function () {
 
             log = console.log;
 
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };
@@ -274,6 +277,9 @@ describe('Values', function () {
             log = console.log;
 
             /* istanbul ignore next */
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };
@@ -328,6 +334,9 @@ describe('Property-value pairs', function () {
 
             log = console.log;
 
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };
@@ -355,6 +364,9 @@ describe('Property-value pairs', function () {
             log = console.log;
 
             /* istanbul ignore next */
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };
@@ -418,6 +430,9 @@ describe('Property-value pairs', function () {
 
             log = console.log;
 
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };
@@ -445,6 +460,9 @@ describe('Property-value pairs', function () {
             log = console.log;
 
             /* istanbul ignore next */
+            /**
+             * Spy to detect if a function is invoked.
+             */
             global.console.log = function () {
                 isCalled = true;
             };

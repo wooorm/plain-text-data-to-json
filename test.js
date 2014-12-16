@@ -153,9 +153,9 @@ describe('Property-value pairs', function () {
                     '\trainbow:double\t\n' +
                     'doge\t:\tso scare'
                 )) === JSON.stringify({
-                    'unicorn': 'magic creature',
+                    'doge': 'so scare',
                     'rainbow': 'double',
-                    'doge': 'so scare'
+                    'unicorn': 'magic creature'
                 })
             );
         }
@@ -176,9 +176,9 @@ describe('Property-value pairs', function () {
                 'doge\t\t\tso scare', {
                     'delimiter': '\t'
                 })) === JSON.stringify({
-                    'unicorn': 'magic creature',
+                    'doge': 'so scare',
                     'rainbow': 'double',
-                    'doge': 'so scare'
+                    'unicorn': 'magic creature'
                 })
             );
         }

@@ -124,4 +124,4 @@ Some errors are thrown when malformed “plain-text” is found, such as:
 
 ## License
 
-MIT © Titus Wormer
+MIT © [Titus Wormer](http://wooorm.com)

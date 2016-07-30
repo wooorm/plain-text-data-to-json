@@ -1,484 +1,289 @@
+/**
+ * @author Titus Wormer
+ * @copyright 2014 Titus Wormer
+ * @license MIT
+ * @module plain-text-data-to-json
+ * @fileoverview Test suite for `plain-text-data-to-json`.
+ */
+
 'use strict';
 
-/**
- * Dependencies.
- */
+/* Dependencies. */
+var test = require('tape');
+var cept = require('cept');
+var toJSON = require('./');
 
-var textToJSON,
-    assert;
-
-textToJSON = require('./');
-assert = require('assert');
-
-/**
- * Cached methods.
- */
-
-var stringify;
-
-stringify = JSON.stringify;
-
-/**
- * Tests.
- */
-
-describe('textToJSON', function () {
-    it('should be a `function`', function () {
-        assert(typeof textToJSON === 'function');
-    });
+/* Tests. */
+test('toJSON', function (t) {
+  t.equal(typeof toJSON, 'function', 'should be a `function`');
+  t.end();
 });
 
-describe('Comments', function () {
-    it('should strip line comments', function () {
-        var data;
+test('Comments', function (t) {
+  t.deepEqual(
+    toJSON([
+      '% This is a completely commented line.',
+      'unicorn'
+    ].join('\n')),
+    ['unicorn'],
+    'should strip line comments'
+  );
 
-        data = textToJSON(
-            '% This is a completely commented line.\n' +
-            'unicorn'
-        );
+  t.deepEqual(
+    toJSON('unicorn % This is a partially commented line.'),
+    ['unicorn'],
+    'should strip partial line comments'
+  );
 
-        assert(stringify(data) === '["unicorn"]');
-    });
+  t.deepEqual(
+    toJSON('unicorn % This is a partially commented line.', {
+      comment: false
+    }),
+    ['unicorn % This is a partially commented line.'],
+    'should honour `comment: false`'
+  );
 
-    it('should strip partial line comments', function () {
-        var data;
+  t.deepEqual(
+    toJSON([
+      '# This is a completely commented line.',
+      'unicorn'
+    ].join('\n'), {
+      comment: '#'
+    }),
+    ['unicorn'],
+    'should strip line comments based on a given token'
+  );
 
-        data = textToJSON(
-            'unicorn % This is a partially commented line.'
-        );
+  t.deepEqual(
+    toJSON('unicorn # This is a partially commented line.', {
+      comment: '#'
+    }),
+    ['unicorn'],
+    'should strip partial comments based on a given token'
+  );
 
-        assert(stringify(data) === '["unicorn"]');
-    });
-
-    it('should NOT strip comments when `comment` is `false`', function () {
-        var data;
-
-        data = textToJSON(
-            'unicorn % This is a partially commented line.', {
-                'comment': false
-            }
-        );
-
-        assert(
-            stringify(data) ===
-            '["unicorn % This is a partially commented line."]'
-        );
-    });
-
-    it('should strip line comments based on a given token', function () {
-        var data;
-
-        data = textToJSON(
-            '# This is a completely commented line.\n' +
-            'unicorn', {
-                'comment': '#'
-            }
-        );
-
-        assert(stringify(data) === '["unicorn"]');
-    });
-
-    it('should strip partial line comments based on a given token',
-        function () {
-            var data;
-
-            data = textToJSON(
-                'unicorn # This is a partially commented line.', {
-                    'comment': '#'
-                }
-            );
-
-            assert(stringify(data) === '["unicorn"]');
-        }
-    );
+  t.end();
 });
 
-describe('White space', function () {
-    it('should trim affixed white space', function () {
-        var data;
+test('White space', function (t) {
+  t.deepEqual(
+    toJSON('  \tunicorn  \t'),
+    ['unicorn'],
+    'should trim prefixed and suffixed white space'
+  );
 
-        data = textToJSON('  \tunicorn');
+  t.end();
+});
 
-        assert(stringify(data) === '["unicorn"]');
+test('Blank lines', function (t) {
+  t.deepEqual(
+    toJSON('\n  \t  \ndoge\n\nunicorn\r\n'),
+    ['doge', 'unicorn'],
+    'should remove empty / blank lines'
+  );
+
+  t.end();
+});
+
+test('EOF', function (t) {
+  t.deepEqual(toJSON('unicorn'), ['unicorn'], 'No EOL');
+  t.deepEqual(toJSON('unicorn\n'), ['unicorn'], 'LF');
+  t.deepEqual(toJSON('unicorn\r\n'), ['unicorn'], 'CR+LF');
+
+  t.end();
+});
+
+test('Property-value pairs', function (t) {
+  t.deepEqual(
+    toJSON('unicorn: magic creature'),
+    {unicorn: 'magic creature'},
+    'should support pair delimiters'
+  );
+
+  t.deepEqual(
+    toJSON([
+      'unicorn : magic creature',
+      '\trainbow:double\t',
+      'doge\t:\tso scare'
+    ].join('\n')),
+    {
+      doge: 'so scare',
+      rainbow: 'double',
+      unicorn: 'magic creature'
+    },
+    'white-space around pair delimiters'
+  );
+
+  t.deepEqual(
+    toJSON('unicorn\tmagic creature', {delimiter: '\t'}),
+    {unicorn: 'magic creature'},
+    'given delimiters'
+  );
+
+  t.end();
+});
+
+test('Values', function (t) {
+  t.deepEqual(toJSON('unicorn'), ['unicorn'], 'one value');
+
+  t.deepEqual(
+    toJSON('unicorn \n doge\n\trainbow'),
+    ['doge', 'rainbow', 'unicorn'],
+    'multiple values'
+  );
+
+  t.end();
+});
+
+test('Mixed values', function (t) {
+  t.throws(
+    function () {
+      toJSON('unicorn\nrainbow: double');
+    },
+    /^Error: Error at `rainbow,double`/,
+    'should throw when both property-value pairs and values are provided'
+  );
+
+  t.end();
+});
+
+test('Invalid lists', function (t) {
+  t.throws(
+    function () {
+      toJSON('unicorn\nrainbow\nunicorn');
+    },
+    /^Error: Error at `unicorn`: Duplicate data found/,
+    'should throw when duplicate values exist'
+  );
+
+  t.deepEqual(
+    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true}),
+    ['rainbow', 'unicorn', 'unicorn'],
+    'should honour forgiving'
+  );
+
+  t.test('should log duplicate values when `forgiving`', function (st) {
+    var stop = cept(console, 'log', hoist);
+    var params;
+
+    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true});
+
+    stop();
+
+    st.equal(params[0], 'Ignoring duplicate key for `unicorn`');
+    st.end();
+
+    function hoist() {
+      params = arguments;
+    }
+  });
+
+  t.test('should honour `log: false`', function (st) {
+    var stop = cept(console, 'log', hoist);
+    var params;
+
+    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true, log: false});
+
+    stop();
+
+    st.equal(params, undefined);
+    st.end();
+
+    function hoist() {
+      params = arguments;
+    }
+  });
+
+  t.end();
+});
+
+test('Invalid objects', function (t) {
+  t.throws(
+    function () {
+      toJSON('doge: so scare\nunicorn: magic\ndoge: double');
+    },
+    /^Error: Error at `doge,double`: Duplicate data found/,
+    'should throw when duplicate values exist'
+  );
+
+  t.deepEqual(
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+      forgiving: true
+    }),
+    {doge: 'so scare', unicorn: 'magic creature'},
+    'should honour forgiving'
+  );
+
+  t.test('should log duplicate values when `forgiving`', function (st) {
+    var stop = cept(console, 'log', hoist);
+    var params;
+
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+      forgiving: true
     });
 
-    it('should trim suffixed white space', function () {
-        var data;
+    stop();
 
-        data = textToJSON('unicorn  \t');
+    st.equal(params[0], 'Ignoring duplicate key for `doge`');
+    st.end();
 
-        assert(stringify(data) === '["unicorn"]');
+    function hoist() {
+      params = arguments;
+    }
+  });
+
+  t.test('should honour `log: false`', function (st) {
+    var stop = cept(console, 'log', hoist);
+    var params;
+
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+      forgiving: true,
+      log: false
     });
-});
 
-describe('Empty lines', function () {
-    it('should remove empty lines', function () {
-        var data;
+    stop();
 
-        data = textToJSON('\n\n\nunicorn\r\n');
+    st.equal(params, undefined);
+    st.end();
 
-        assert(stringify(data) === '["unicorn"]');
+    function hoist() {
+      params = arguments;
+    }
+  });
+
+  t.deepEqual(
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+      forgiving: 'fix'
+    }),
+    {doge: 'so scare', unicorn: 'magic creature'},
+    'should honour `forgiving: \'fix\'`'
+  );
+
+  t.deepEqual(
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: rainbows\n', {
+      forgiving: 'fix'
+    }),
+    {doge: 'rainbows', unicorn: 'magic creature'},
+    'duplicate keys with different values'
+  );
+
+  t.test('should log for duplicate keys when `forgiving` is `"fix"', function (st) {
+    var stop = cept(console, 'log', hoist);
+    var params;
+
+    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+      forgiving: true
     });
 
-    it('should remove empty (white space only) lines', function () {
-        var data;
+    stop();
 
-        data = textToJSON(
-            '  \t  \n' +
-            'unicorn'
-        );
+    st.equal(params[0], 'Ignoring duplicate key for `doge`');
+    st.end();
 
-        assert(stringify(data) === '["unicorn"]');
-    });
-});
+    function hoist() {
+      params = arguments;
+    }
+  });
 
-describe('End-of-file end-of-line', function () {
-    it('should return the same result, with or without EOF EOL', function () {
-        assert(stringify(textToJSON('unicorn')) === '["unicorn"]');
-        assert(stringify(textToJSON('unicorn\n')) === '["unicorn"]');
-        assert(stringify(textToJSON('unicorn\r\n')) === '["unicorn"]');
-    });
-});
-
-describe('Property-value pairs', function () {
-    it('should return an object when a file contains pair delimiters',
-        function () {
-            assert(
-                stringify(textToJSON('unicorn : magic creature')) ===
-                '{"unicorn":"magic creature"}'
-            );
-
-            assert(stringify(textToJSON(
-                    'unicorn : magic creature\n' +
-                    '\trainbow:double\t\n' +
-                    'doge\t:\tso scare'
-                )) === JSON.stringify({
-                    'doge': 'so scare',
-                    'rainbow': 'double',
-                    'unicorn': 'magic creature'
-                })
-            );
-        }
-    );
-
-    it('should return an object when a file contains pair delimiters ' +
-        'based on a given token',
-        function () {
-            assert(
-                stringify(textToJSON('unicorn	magic creature', {
-                    'delimiter': '\t'
-                })) === '{"unicorn":"magic creature"}'
-            );
-
-            assert(stringify(textToJSON(
-                'unicorn \t magic creature\n' +
-                '\trainbow\tdouble\t\n' +
-                'doge\t\t\tso scare', {
-                    'delimiter': '\t'
-                })) === JSON.stringify({
-                    'doge': 'so scare',
-                    'rainbow': 'double',
-                    'unicorn': 'magic creature'
-                })
-            );
-        }
-    );
-});
-
-describe('Values', function () {
-    it('should return an array', function () {
-        assert(stringify(textToJSON('unicorn')) === '["unicorn"]');
-
-        assert(stringify(textToJSON(
-                'unicorn \n' +
-                ' doge\n' +
-                '\trainbow\t'
-            )) === JSON.stringify([
-                'doge',
-                'rainbow',
-                'unicorn'
-            ])
-        );
-    });
-});
-
-describe('Mixed property-value pairs and values', function () {
-    it('should throw when both property-value pairs and values are provided',
-        function () {
-            assert.throws(function () {
-                textToJSON('unicorn\nrainbow: double');
-            }, /`rainbow/);
-        }
-    );
-});
-
-describe('Values', function () {
-    it('should throw when duplicate values exist',
-        function () {
-            assert.throws(function () {
-                textToJSON(
-                    'unicorn\n' +
-                    'doge\n' +
-                    'unicorn\n'
-                );
-            }, /`unicorn/);
-        }
-    );
-
-    it('should NOT throw when duplicate values exist and `forgiving` is ' +
-        '`true`',
-        function () {
-            assert.doesNotThrow(function () {
-                textToJSON(
-                    'unicorn\n' +
-                    'doge\n' +
-                    'unicorn\n', {
-                        'forgiving': true
-                    }
-                );
-            });
-        }
-    );
-
-    it('should log for duplicate values when `forgiving` is `true`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'unicorn\n' +
-                'doge\n' +
-                'unicorn\n', {
-                    'forgiving': true
-                }
-            );
-
-            assert(isCalled === true);
-
-            global.console.log = log;
-        }
-    );
-
-    it('should NOT log for duplicate keys when `forgiving` is `true`' +
-        ' and `log` is `false`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /* istanbul ignore next */
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'unicorn\n' +
-                'doge\n' +
-                'unicorn\n', {
-                    'forgiving': true,
-                    'log': false
-                }
-            );
-
-            assert(isCalled !== true);
-
-            global.console.log = log;
-        }
-    );
-});
-
-describe('Property-value pairs', function () {
-    it('should throw when duplicate keys exist',
-        function () {
-            assert.throws(function () {
-                textToJSON(
-                    'doge: so scare\n' +
-                    'unicorn: magic creature\n' +
-                    'doge: double\n'
-                );
-            }, /`doge/);
-        }
-    );
-
-    it('should NOT throw for duplicate keys when `forgiving` is `true`',
-        function () {
-            assert.doesNotThrow(function () {
-                textToJSON(
-                    'doge: so scare\n' +
-                    'unicorn: magic creature\n' +
-                    'doge: so scare\n', {
-                        'forgiving': true
-                    }
-                );
-            });
-        }
-    );
-
-    it('should log for duplicate keys when `forgiving` is `true`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'doge: so scare\n' +
-                'unicorn: magic creature\n' +
-                'doge: so scare\n', {
-                    'forgiving': true
-                }
-            );
-
-            assert(isCalled === true);
-
-            global.console.log = log;
-        }
-    );
-
-    it('should NOT log for duplicate keys when `forgiving` is `true`' +
-        ' and `log` is `false`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /* istanbul ignore next */
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'doge: so scare\n' +
-                'unicorn: magic creature\n' +
-                'doge: so scare\n', {
-                    'forgiving': true,
-                    'log': false
-                }
-            );
-
-            assert(isCalled !== true);
-
-            global.console.log = log;
-        }
-    );
-
-    it('should NOT throw when duplicate key-values exist when `forgiving` ' +
-        'is `"fix"`',
-        function () {
-            assert.doesNotThrow(function () {
-                textToJSON(
-                    'doge: so scare\n' +
-                    'unicorn: magic creature\n' +
-                    'doge: so scare\n', {
-                        'forgiving': 'fix'
-                    }
-                );
-            });
-        }
-    );
-
-    it('should NOT throw when duplicate keys with different values exist ' +
-        'when `forgiving` is `"fix"`',
-        function () {
-            assert.doesNotThrow(function () {
-                var data;
-
-                data = textToJSON(
-                    'doge: so scare\n' +
-                    'unicorn: magic creature\n' +
-                    'doge: rainbows\n', {
-                        'forgiving': 'fix'
-                    }
-                );
-
-                assert(stringify(data) === stringify({
-                    'doge': 'rainbows',
-                    'unicorn': 'magic creature'
-                }));
-            });
-        }
-    );
-
-    it('should log for duplicate keys when `forgiving` is `"fix"`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'doge: so scare\n' +
-                'unicorn: magic creature\n' +
-                'doge: so scare\n', {
-                    'forgiving': 'fix'
-                }
-            );
-
-            assert(isCalled === true);
-
-            global.console.log = log;
-        }
-    );
-
-    it('should NOT log for duplicate keys when `forgiving` is `"fix"`' +
-        ' and `log` is `false`',
-        function () {
-            var log,
-                isCalled;
-
-            log = console.log;
-
-            /* istanbul ignore next */
-            /**
-             * Spy to detect if a function is invoked.
-             */
-            global.console.log = function () {
-                isCalled = true;
-            };
-
-            textToJSON(
-                'doge: so scare\n' +
-                'unicorn: magic creature\n' +
-                'doge: so scare\n', {
-                    'forgiving': 'fix',
-                    'log': false
-                }
-            );
-
-            assert(isCalled !== true);
-
-            global.console.log = log;
-        }
-    );
+  t.end();
 });

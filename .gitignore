@@ -1,4 +1,7 @@
 .DS_Store
 *.log
-node_modules/
+.nyc_output/
 coverage/
+node_modules/
+plain-text-data-to-json.js
+plain-text-data-to-json.min.js

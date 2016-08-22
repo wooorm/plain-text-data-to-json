@@ -39,8 +39,8 @@ comment and property-value pair delimiters?  Specify your own:
 *   `delimiter` (`string`, default: `':'`)
     — Character to use as delimiter between property-value pairs;
 *   `forgiving` (`string` or `boolean`, default: `false`)
-    — When `true`, doesn't throw for duplicate keys, when `"fix"`,
-    doesn't throw for property-value pairs and overwrites
+    — When `true`, doesn’t throw for duplicate keys, when `"fix"`,
+    doesn’t throw for property-value pairs and overwrites
     (see [errors][]);
 *   `log` (`boolean`, default: `true`)
     — Whether to log when `forgiving` ignores an error.

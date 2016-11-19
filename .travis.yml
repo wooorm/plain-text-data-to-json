@@ -1,9 +1,8 @@
 language: node_js
 node_js:
 - '4.0'
-- '5.0'
-- '6.0'
-after_success: bash <(curl -s https://codecov.io/bash)
+- '7.0'
+after_script: bash <(curl -s https://codecov.io/bash)
 sudo: false
 deploy:
   - provider: npm
@@ -12,7 +11,7 @@ deploy:
       secure: Q6JtoC1bAeMqQmw2fl+xdFxv4wScuUmjNgr/Fc8rLT0z+i84Rp1rJayojOBgFVkpLO5rhJ71OrP4NN4vpAtSp6+hvIqhFNAT98DQqFh6VKEa0TCRFTYzKiCLlKKfMun69slznwjjZGq4JrCLpLs/xuDVJp/sNxzPSSIcXVQ3Drc=
     on:
       tags: true
-      node: '5.0'
+      node: '4.0'
   - provider: releases
     api_key:
       secure: X6QF7zle+i+uRKy4c1km2m6ZH2AmbFQqnqP4BGoI4CBB+6tRiQCGoz8wd8LkfBemJcaAaS5O/g9ltb/n+QLHG1sMo8pTy0p4YVGOz6Jp8W0JspSkd9J4gEflTqJ0N7ONXCfHbhb9Lq399OkNyR8lc9432bbLv35zc+0y3deIHFE=
@@ -21,4 +20,4 @@ deploy:
       - "plain-text-data-to-json.min.js"
     on:
       tags: true
-      node: '6.0'
+      node: '7.0'

@@ -1,11 +1,3 @@
-/**
- * @author Titus Wormer
- * @copyright 2014 Titus Wormer
- * @license MIT
- * @module plain-text-data-to-json
- * @fileoverview Transform a simple plain-text database to JSON.
- */
-
 'use strict';
 
 /* Dependencies. */
@@ -15,17 +7,7 @@ var trim = require('trim');
 /* Expose. */
 module.exports = toJSON;
 
-/**
- * Transform a string into an array or object of values.
- *
- * @param {string} value
- * @param {?Object} options
- * @param {?boolean} options.log
- * @param {?(string|boolean)} options.comment
- * @param {?(string|boolean)} options.delimiter
- * @param {?(string|boolean)} options.fix
- * @return {Object.<string, string>|Array.<string>}
- */
+/* Transform a string into an array or object of values. */
 function toJSON(value, options) {
   var propertyOrValues = {};
   var lines;
@@ -117,12 +99,7 @@ function toJSON(value, options) {
   return values || lines;
 }
 
-/**
- * Transform a list of property--value tuples to an object.
- *
- * @param {Array.<Pair>} pairs
- * @return {Object.<string, string>}
- */
+/* Transform a list of property--value tuples to an object. */
 function propertyValuePairsToObject(pairs) {
   var values = {};
 
@@ -133,33 +110,17 @@ function propertyValuePairsToObject(pairs) {
   return values;
 }
 
-/**
- * Sort on the first (`0`) index.
- *
- * To be passed to `Array#sort()`.
- *
- * @param {Pair} a
- * @param {Pair} b
- * @return {number}
- */
+/* Sort on the first (`0`) index. */
 function sortOnFirstIndex(a, b) {
   return a[0].charCodeAt(0) - b[0].charCodeAt(0);
 }
 
-/**
- * Factory to transform lines to property--value tuples.
- *
- * @param {string} token
- * @return {function(string): Pair}
- */
+/* Factory to transform lines to property--value tuples. */
 function toPropertyValuePairs(token) {
-  /**
-   * Transform `value` to a property--value tuple.
-   *
-   * @param {string} value - Line.
-   * @return {Pair}
-   */
-  return function (value) {
+  return toPropValuePairs;
+
+  /* Transform `value` to a property--value tuple. */
+  function toPropValuePairs(value) {
     var values = value.split(token);
     var result = [trim(values.shift())];
 
@@ -168,23 +129,15 @@ function toPropertyValuePairs(token) {
     }
 
     return result;
-  };
+  }
 }
 
-/**
- * Strip comments factory.
- *
- * @param {string} token
- * @return {function(string): string}
- */
+/* Strip comments factory. */
 function stripComments(token) {
-  /**
-   * Strip comments.
-   *
-   * @param {string} value - Line.
-   * @return {string} Value with comments removed.
-   */
-  return function (value) {
+  return strip;
+
+  /* Strip comments. */
+  function strip(value) {
     var index = value.indexOf(token);
 
     if (index !== -1) {
@@ -192,5 +145,5 @@ function stripComments(token) {
     }
 
     return value;
-  };
+  }
 }

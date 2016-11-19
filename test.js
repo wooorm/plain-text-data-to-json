@@ -1,19 +1,9 @@
-/**
- * @author Titus Wormer
- * @copyright 2014 Titus Wormer
- * @license MIT
- * @module plain-text-data-to-json
- * @fileoverview Test suite for `plain-text-data-to-json`.
- */
-
 'use strict';
 
-/* Dependencies. */
 var test = require('tape');
 var cept = require('cept');
 var toJSON = require('./');
 
-/* Tests. */
 test('toJSON', function (t) {
   t.equal(typeof toJSON, 'function', 'should be a `function`');
   t.end();

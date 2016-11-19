@@ -5,7 +5,7 @@ JSON.
 
 ## Installation
 
-[npm][npm-install]:
+[npm][]:
 
 ```bash
 npm install plain-text-data-to-json
@@ -19,7 +19,6 @@ var toJSON = require('plain-text-data-to-json');
 
 var doc = fs.readFileSync('input.txt', 'utf8');
 
-// Transform:
 var data = toJSON(doc);
 
 fs.writeFileSync('output.json', JSON.stringify(data, null, 2) + '\n');
@@ -92,7 +91,7 @@ Empty lines will be striped.  This includes blank (white space only)
 lines.
 
 ```txt
-    %%% this file contains a value. %%%    
+    %%% this file contains a value. %%%
 
 unicorn
 ```
@@ -155,7 +154,7 @@ Some errors are thrown when malformed “plain-text” is found, such as:
 
 [codecov]: https://codecov.io/github/wooorm/plain-text-data-to-json
 
-[npm-install]: https://docs.npmjs.com/cli/install
+[npm]: https://docs.npmjs.com/cli/install
 
 [license]: LICENSE
 

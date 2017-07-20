@@ -31,18 +31,27 @@ fs.writeFileSync('output.json', JSON.stringify(data, null, 2) + '\n');
 Transforms the given value (string) to JSON.  Don’t like the default
 comment and property-value pair delimiters?  Specify your own:
 
-###### `options`
+##### `options`
 
-*   `comment` (`string` or `boolean`, default: `'%'`)
-    — Character to use for line-comments; `false` turns off comments;
-*   `delimiter` (`string`, default: `':'`)
-    — Character to use as delimiter between property-value pairs;
-*   `forgiving` (`string` or `boolean`, default: `false`)
-    — When `true`, doesn’t throw for duplicate keys, when `"fix"`,
-    doesn’t throw for property-value pairs and overwrites
-    (see [errors][]);
-*   `log` (`boolean`, default: `true`)
-    — Whether to log when `forgiving` ignores an error.
+###### `options.comment`
+
+Character to use for line-comments, `false` turns off comments (`string` or
+`boolean`, default: `'%'`)
+
+###### `options.delimiter`
+
+Character to use as delimiter between property-value pairs (`string`,
+default: `':'`)
+
+###### `options.forgiving`
+
+How relaxed to be (`string` or `boolean`, default: `false`).  When `true`,
+doesn’t throw for duplicate keys.  When `"fix"`, doesn’t throw for
+property-value pairs and overwrites (see [errors][]).
+
+###### `options.log`
+
+Whether to log when `forgiving` ignores an error (`boolean`, default: `true`).
 
 ## Why
 
@@ -134,11 +143,11 @@ Yields:
 
 Some errors are thrown when malformed “plain-text” is found, such as:
 
-*   When lines both with and without colons exist;
-*   In arrays, when duplicate values exist (unless `forgiving: true`);
-*   In objects, when duplicate properties exist (unless `forgiving: true`).
+*   When lines both with and without colons exist
+*   In arrays, when duplicate values exist (unless `forgiving: true`)
+*   In objects, when duplicate properties exist (unless `forgiving: true`)
 *   In objects, when duplicate properties with different values exist
-    (unless `forgiving: "fix"`).
+    (unless `forgiving: "fix"`)
 
 ## License
 

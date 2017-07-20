@@ -123,7 +123,7 @@ function toPropertyValuePairs(token) {
     var values = value.split(token);
     var result = [trim(values.shift())];
 
-    if (values.length) {
+    if (values.length !== 0) {
       result.push(trim(values.join(token)));
     }
 

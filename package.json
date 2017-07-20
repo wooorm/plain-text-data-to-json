@@ -8,14 +8,14 @@
     "database",
     "json"
   ],
-  "files": [
-    "index.js"
-  ],
-  "repository": "https://github.com/wooorm/plain-text-data-to-json",
+  "repository": "wooorm/plain-text-data-to-json",
   "bugs": "https://github.com/wooorm/plain-text-data-to-json/issues",
   "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
+  ],
+  "files": [
+    "index.js"
   ],
   "dependencies": {
     "trim": "0.0.1"
@@ -43,14 +43,13 @@
   "xo": {
     "space": true,
     "esnext": false,
-    "rules": {
-      "unicorn/explicit-length-check": "off"
-    },
     "ignores": [
       "plain-text-data-to-json.js"
     ]
   },
   "remarkConfig": {
-    "plugins": ["preset-wooorm"]
+    "plugins": [
+      "preset-wooorm"
+    ]
   }
 }

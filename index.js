@@ -1,9 +1,10 @@
 'use strict';
 
-var has = require('has');
 var trim = require('trim');
 
 module.exports = toJSON;
+
+var own = {}.hasOwnProperty;
 
 /* Transform a string into an array or object of values. */
 function toJSON(value, options) {
@@ -50,7 +51,7 @@ function toJSON(value, options) {
       );
     }
 
-    if (has(propertyOrValues, line[0])) {
+    if (own.call(propertyOrValues, line[0])) {
       if (
         !options.forgiving ||
         (

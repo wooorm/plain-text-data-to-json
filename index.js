@@ -1,10 +1,8 @@
 'use strict';
 
-/* Dependencies. */
 var has = require('has');
 var trim = require('trim');
 
-/* Expose. */
 module.exports = toJSON;
 
 /* Transform a string into an array or object of values. */

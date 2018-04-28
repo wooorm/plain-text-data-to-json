@@ -2,7 +2,7 @@
 
 var test = require('tape');
 var cept = require('cept');
-var toJSON = require('./');
+var toJSON = require('.');
 
 test('toJSON', function (t) {
   t.equal(typeof toJSON, 'function', 'should be a `function`');

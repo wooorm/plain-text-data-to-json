@@ -74,8 +74,8 @@ function toJSON(value, options) {
           propertyOrValues[line[0]] !== line[1]
         ) {
           console.log(
-              'Overwriting `' + propertyOrValues[line[0]] + '` ' +
-              'to `' + line[1] + '` for `' + line[0] + '`'
+            'Overwriting `' + propertyOrValues[line[0]] + '` ' +
+            'to `' + line[1] + '` for `' + line[0] + '`'
           );
         } else {
           console.log(

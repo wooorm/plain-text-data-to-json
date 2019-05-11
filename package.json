@@ -23,18 +23,18 @@
   "devDependencies": {
     "browserify": "^16.0.0",
     "cept": "^1.0.1",
-    "esmangle": "^1.0.1",
     "nyc": "^14.0.0",
     "prettier": "^1.12.1",
     "remark-cli": "^6.0.0",
     "remark-preset-wooorm": "^4.0.0",
     "tape": "^4.0.0",
+    "tinyify": "^2.5.0",
     "xo": "^0.24.0"
   },
   "scripts": {
     "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",
-    "build-bundle": "browserify index.js --bare -s plain-text-data-to-json > plain-text-data-to-json.js",
-    "build-mangle": "esmangle plain-text-data-to-json.js > plain-text-data-to-json.min.js",
+    "build-bundle": "browserify . -s plain-text-data-to-json -o plain-text-data-to-json.js",
+    "build-mangle": "browserify . -s plain-text-data-to-json -p tinyify -o plain-text-data-to-json.min.js",
     "build": "npm run build-bundle && npm run build-mangle",
     "test-api": "node test",
     "test-coverage": "nyc --reporter lcov tape test.js",

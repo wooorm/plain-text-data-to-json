@@ -1,4 +1,9 @@
-# plain-text-data-to-json [![Build Status][travis-badge]][travis] [![Coverage Status][codecov-badge]][codecov]
+# plain-text-data-to-json
+
+[![Build][build-badge]][build]
+[![Coverage][coverage-badge]][coverage]
+[![Downloads][downloads-badge]][downloads]
+[![Size][size-badge]][size]
 
 Transform a “database” / simple (word, phrase) list from plain-text to
 JSON.
@@ -155,13 +160,21 @@ Some errors are thrown when malformed “plain-text” is found, such as:
 
 <!-- Definitions -->
 
-[travis-badge]: https://img.shields.io/travis/wooorm/plain-text-data-to-json.svg
+[build-badge]: https://img.shields.io/travis/wooorm/plain-text-data-to-json.svg
 
-[travis]: https://travis-ci.org/wooorm/plain-text-data-to-json
+[build]: https://travis-ci.org/wooorm/plain-text-data-to-json
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/wooorm/plain-text-data-to-json.svg
+[coverage-badge]: https://img.shields.io/codecov/c/github/wooorm/plain-text-data-to-json.svg
 
-[codecov]: https://codecov.io/github/wooorm/plain-text-data-to-json
+[coverage]: https://codecov.io/github/wooorm/plain-text-data-to-json
+
+[downloads-badge]: https://img.shields.io/npm/dm/plain-text-data-to-json.svg
+
+[downloads]: https://www.npmjs.com/package/plain-text-data-to-json
+
+[size-badge]: https://img.shields.io/bundlephobia/minzip/plain-text-data-to-json.svg
+
+[size]: https://bundlephobia.com/result?p=plain-text-data-to-json
 
 [npm]: https://docs.npmjs.com/cli/install
 

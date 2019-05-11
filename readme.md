@@ -167,6 +167,6 @@ Some errors are thrown when malformed “plain-text” is found, such as:
 
 [license]: license
 
-[author]: http://wooorm.com
+[author]: https://wooorm.com
 
 [errors]: #errors

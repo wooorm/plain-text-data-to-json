@@ -6,7 +6,7 @@ module.exports = toJSON
 
 var own = {}.hasOwnProperty
 
-/* Transform a string into an array or object of values. */
+// Transform a string into an array or object of values.
 function toJSON(value, options) {
   var propertyOrValues = {}
   var lines
@@ -104,7 +104,7 @@ function toJSON(value, options) {
   return values || lines
 }
 
-/* Transform a list of property--value tuples to an object. */
+// Transform a list of property--value tuples to an object.
 function propertyValuePairsToObject(pairs) {
   var values = {}
 
@@ -115,16 +115,16 @@ function propertyValuePairsToObject(pairs) {
   return values
 }
 
-/* Sort on the first (`0`) index. */
+// Sort on the first (`0`) index.
 function sortOnFirstIndex(a, b) {
   return a[0].charCodeAt(0) - b[0].charCodeAt(0)
 }
 
-/* Factory to transform lines to property--value tuples. */
+// Factory to transform lines to property--value tuples.
 function toPropertyValuePairs(token) {
   return toPropValuePairs
 
-  /* Transform `value` to a property--value tuple. */
+  // Transform `value` to a property--value tuple.
   function toPropValuePairs(value) {
     var values = value.split(token)
     var result = [trim(values.shift())]
@@ -137,11 +137,11 @@ function toPropertyValuePairs(token) {
   }
 }
 
-/* Strip comments factory. */
+// Strip comments factory.
 function stripComments(token) {
   return strip
 
-  /* Strip comments. */
+  // Strip comments.
   function strip(value) {
     var index = value.indexOf(token)
 

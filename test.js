@@ -2,28 +2,28 @@
 
 var test = require('tape')
 var cept = require('cept')
-var toJSON = require('.')
+var toJson = require('.')
 
-test('toJSON', function(t) {
-  t.equal(typeof toJSON, 'function', 'should be a `function`')
+test('toJson', function(t) {
+  t.equal(typeof toJson, 'function', 'should be a `function`')
   t.end()
 })
 
 test('Comments', function(t) {
   t.deepEqual(
-    toJSON(['% This is a completely commented line.', 'unicorn'].join('\n')),
+    toJson(['% This is a completely commented line.', 'unicorn'].join('\n')),
     ['unicorn'],
     'should strip line comments'
   )
 
   t.deepEqual(
-    toJSON('unicorn % This is a partially commented line.'),
+    toJson('unicorn % This is a partially commented line.'),
     ['unicorn'],
     'should strip partial line comments'
   )
 
   t.deepEqual(
-    toJSON('unicorn % This is a partially commented line.', {
+    toJson('unicorn % This is a partially commented line.', {
       comment: false
     }),
     ['unicorn % This is a partially commented line.'],
@@ -31,7 +31,7 @@ test('Comments', function(t) {
   )
 
   t.deepEqual(
-    toJSON(['# This is a completely commented line.', 'unicorn'].join('\n'), {
+    toJson(['# This is a completely commented line.', 'unicorn'].join('\n'), {
       comment: '#'
     }),
     ['unicorn'],
@@ -39,7 +39,7 @@ test('Comments', function(t) {
   )
 
   t.deepEqual(
-    toJSON('unicorn # This is a partially commented line.', {
+    toJson('unicorn # This is a partially commented line.', {
       comment: '#'
     }),
     ['unicorn'],
@@ -51,7 +51,7 @@ test('Comments', function(t) {
 
 test('White space', function(t) {
   t.deepEqual(
-    toJSON('  \tunicorn  \t'),
+    toJson('  \tunicorn  \t'),
     ['unicorn'],
     'should trim prefixed and suffixed white space'
   )
@@ -61,7 +61,7 @@ test('White space', function(t) {
 
 test('Blank lines', function(t) {
   t.deepEqual(
-    toJSON('\n  \t  \ndoge\n\nunicorn\r\n'),
+    toJson('\n  \t  \ndoge\n\nunicorn\r\n'),
     ['doge', 'unicorn'],
     'should remove empty / blank lines'
   )
@@ -70,22 +70,22 @@ test('Blank lines', function(t) {
 })
 
 test('EOF', function(t) {
-  t.deepEqual(toJSON('unicorn'), ['unicorn'], 'No EOL')
-  t.deepEqual(toJSON('unicorn\n'), ['unicorn'], 'LF')
-  t.deepEqual(toJSON('unicorn\r\n'), ['unicorn'], 'CR+LF')
+  t.deepEqual(toJson('unicorn'), ['unicorn'], 'No EOL')
+  t.deepEqual(toJson('unicorn\n'), ['unicorn'], 'LF')
+  t.deepEqual(toJson('unicorn\r\n'), ['unicorn'], 'CR+LF')
 
   t.end()
 })
 
 test('Property-value pairs', function(t) {
   t.deepEqual(
-    toJSON('unicorn: magic creature'),
+    toJson('unicorn: magic creature'),
     {unicorn: 'magic creature'},
     'should support pair delimiters'
   )
 
   t.deepEqual(
-    toJSON(
+    toJson(
       [
         'unicorn : magic creature',
         '\trainbow:double\t',
@@ -101,7 +101,7 @@ test('Property-value pairs', function(t) {
   )
 
   t.deepEqual(
-    toJSON('unicorn\tmagic creature', {delimiter: '\t'}),
+    toJson('unicorn\tmagic creature', {delimiter: '\t'}),
     {unicorn: 'magic creature'},
     'given delimiters'
   )
@@ -110,10 +110,10 @@ test('Property-value pairs', function(t) {
 })
 
 test('Values', function(t) {
-  t.deepEqual(toJSON('unicorn'), ['unicorn'], 'one value')
+  t.deepEqual(toJson('unicorn'), ['unicorn'], 'one value')
 
   t.deepEqual(
-    toJSON('unicorn \n doge\n\trainbow'),
+    toJson('unicorn \n doge\n\trainbow'),
     ['doge', 'rainbow', 'unicorn'],
     'multiple values'
   )
@@ -124,7 +124,7 @@ test('Values', function(t) {
 test('Mixed values', function(t) {
   t.throws(
     function() {
-      toJSON('unicorn\nrainbow: double')
+      toJson('unicorn\nrainbow: double')
     },
     /^Error: Error at `rainbow,double`/,
     'should throw when both property-value pairs and values are provided'
@@ -136,14 +136,14 @@ test('Mixed values', function(t) {
 test('Invalid lists', function(t) {
   t.throws(
     function() {
-      toJSON('unicorn\nrainbow\nunicorn')
+      toJson('unicorn\nrainbow\nunicorn')
     },
     /^Error: Error at `unicorn`: Duplicate data found/,
     'should throw when duplicate values exist'
   )
 
   t.deepEqual(
-    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true}),
+    toJson('unicorn\nrainbow\nunicorn', {forgiving: true}),
     ['rainbow', 'unicorn', 'unicorn'],
     'should honour forgiving'
   )
@@ -152,7 +152,7 @@ test('Invalid lists', function(t) {
     var stop = cept(console, 'log', hoist)
     var params
 
-    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true})
+    toJson('unicorn\nrainbow\nunicorn', {forgiving: true})
 
     stop()
 
@@ -168,7 +168,7 @@ test('Invalid lists', function(t) {
     var stop = cept(console, 'log', hoist)
     var params
 
-    toJSON('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
+    toJson('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
 
     stop()
 
@@ -186,14 +186,14 @@ test('Invalid lists', function(t) {
 test('Invalid objects', function(t) {
   t.throws(
     function() {
-      toJSON('doge: so scare\nunicorn: magic\ndoge: double')
+      toJson('doge: so scare\nunicorn: magic\ndoge: double')
     },
     /^Error: Error at `doge,double`: Duplicate data found/,
     'should throw when duplicate values exist'
   )
 
   t.deepEqual(
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
     }),
     {doge: 'so scare', unicorn: 'magic creature'},
@@ -204,7 +204,7 @@ test('Invalid objects', function(t) {
     var stop = cept(console, 'log', hoist)
     var params
 
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
     })
 
@@ -222,7 +222,7 @@ test('Invalid objects', function(t) {
     var stop = cept(console, 'log', hoist)
     var params
 
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true,
       log: false
     })
@@ -238,7 +238,7 @@ test('Invalid objects', function(t) {
   })
 
   t.deepEqual(
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: 'fix'
     }),
     {doge: 'so scare', unicorn: 'magic creature'},
@@ -246,7 +246,7 @@ test('Invalid objects', function(t) {
   )
 
   t.deepEqual(
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: rainbows\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: rainbows\n', {
       forgiving: 'fix'
     }),
     {doge: 'rainbows', unicorn: 'magic creature'},
@@ -259,7 +259,7 @@ test('Invalid objects', function(t) {
     var stop = cept(console, 'log', hoist)
     var params
 
-    toJSON('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
     })
 

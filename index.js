@@ -2,12 +2,12 @@
 
 var trim = require('trim')
 
-module.exports = toJSON
+module.exports = toJson
 
 var own = {}.hasOwnProperty
 
 // Transform a string into an array or object of values.
-function toJSON(value, options) {
+function toJson(value, options) {
   var propertyOrValues = {}
   var lines
   var isPropertyValuePair
@@ -146,7 +146,7 @@ function stripComments(token) {
     var index = value.indexOf(token)
 
     if (index !== -1) {
-      value = value.substr(0, index)
+      value = value.slice(0, index)
     }
 
     return value

@@ -1,6 +1,6 @@
 {
   "name": "plain-text-data-to-json",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Transform a simple plain-text database to JSON",
   "license": "MIT",
   "keywords": [

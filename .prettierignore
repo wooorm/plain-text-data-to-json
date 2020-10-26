@@ -1,3 +1,5 @@
 coverage/
 plain-text-data-to-json.js
 plain-text-data-to-json.min.js
+*.json
+*.md

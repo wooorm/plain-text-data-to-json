@@ -4,12 +4,12 @@ var test = require('tape')
 var cept = require('cept')
 var toJson = require('.')
 
-test('toJson', function(t) {
+test('toJson', function (t) {
   t.equal(typeof toJson, 'function', 'should be a `function`')
   t.end()
 })
 
-test('Comments', function(t) {
+test('Comments', function (t) {
   t.deepEqual(
     toJson(['% This is a completely commented line.', 'unicorn'].join('\n')),
     ['unicorn'],
@@ -49,7 +49,7 @@ test('Comments', function(t) {
   t.end()
 })
 
-test('White space', function(t) {
+test('White space', function (t) {
   t.deepEqual(
     toJson('  \tunicorn  \t'),
     ['unicorn'],
@@ -59,7 +59,7 @@ test('White space', function(t) {
   t.end()
 })
 
-test('Blank lines', function(t) {
+test('Blank lines', function (t) {
   t.deepEqual(
     toJson('\n  \t  \ndoge\n\nunicorn\r\n'),
     ['doge', 'unicorn'],
@@ -69,7 +69,7 @@ test('Blank lines', function(t) {
   t.end()
 })
 
-test('EOF', function(t) {
+test('EOF', function (t) {
   t.deepEqual(toJson('unicorn'), ['unicorn'], 'No EOL')
   t.deepEqual(toJson('unicorn\n'), ['unicorn'], 'LF')
   t.deepEqual(toJson('unicorn\r\n'), ['unicorn'], 'CR+LF')
@@ -77,7 +77,7 @@ test('EOF', function(t) {
   t.end()
 })
 
-test('Property-value pairs', function(t) {
+test('Property-value pairs', function (t) {
   t.deepEqual(
     toJson('unicorn: magic creature'),
     {unicorn: 'magic creature'},
@@ -109,7 +109,7 @@ test('Property-value pairs', function(t) {
   t.end()
 })
 
-test('Values', function(t) {
+test('Values', function (t) {
   t.deepEqual(toJson('unicorn'), ['unicorn'], 'one value')
 
   t.deepEqual(
@@ -121,9 +121,9 @@ test('Values', function(t) {
   t.end()
 })
 
-test('Mixed values', function(t) {
+test('Mixed values', function (t) {
   t.throws(
-    function() {
+    function () {
       toJson('unicorn\nrainbow: double')
     },
     /^Error: Error at `rainbow,double`/,
@@ -133,9 +133,9 @@ test('Mixed values', function(t) {
   t.end()
 })
 
-test('Invalid lists', function(t) {
+test('Invalid lists', function (t) {
   t.throws(
-    function() {
+    function () {
       toJson('unicorn\nrainbow\nunicorn')
     },
     /^Error: Error at `unicorn`: Duplicate data found/,
@@ -148,44 +148,44 @@ test('Invalid lists', function(t) {
     'should honour forgiving'
   )
 
-  t.test('should log duplicate values when `forgiving`', function(st) {
+  t.test('should log duplicate values when `forgiving`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var params
+    var parameters
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true})
 
     stop()
 
-    st.equal(params[0], 'Ignoring duplicate key for `unicorn`')
+    st.equal(parameters[0], 'Ignoring duplicate key for `unicorn`')
     st.end()
 
     function hoist() {
-      params = arguments
+      parameters = arguments
     }
   })
 
-  t.test('should honour `log: false`', function(st) {
+  t.test('should honour `log: false`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var params
+    var parameters
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
 
     stop()
 
-    st.equal(params, undefined)
+    st.equal(parameters, undefined)
     st.end()
 
     function hoist() {
-      params = arguments
+      parameters = arguments
     }
   })
 
   t.end()
 })
 
-test('Invalid objects', function(t) {
+test('Invalid objects', function (t) {
   t.throws(
-    function() {
+    function () {
       toJson('doge: so scare\nunicorn: magic\ndoge: double')
     },
     /^Error: Error at `doge,double`: Duplicate data found/,
@@ -200,9 +200,9 @@ test('Invalid objects', function(t) {
     'should honour forgiving'
   )
 
-  t.test('should log duplicate values when `forgiving`', function(st) {
+  t.test('should log duplicate values when `forgiving`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var params
+    var parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
@@ -210,17 +210,17 @@ test('Invalid objects', function(t) {
 
     stop()
 
-    st.equal(params[0], 'Ignoring duplicate key for `doge`')
+    st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
     st.end()
 
     function hoist() {
-      params = arguments
+      parameters = arguments
     }
   })
 
-  t.test('should honour `log: false`', function(st) {
+  t.test('should honour `log: false`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var params
+    var parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true,
@@ -229,11 +229,11 @@ test('Invalid objects', function(t) {
 
     stop()
 
-    st.equal(params, undefined)
+    st.equal(parameters, undefined)
     st.end()
 
     function hoist() {
-      params = arguments
+      parameters = arguments
     }
   })
 
@@ -253,11 +253,11 @@ test('Invalid objects', function(t) {
     'duplicate keys with different values'
   )
 
-  t.test('should log for duplicate keys when `forgiving` is `"fix"', function(
+  t.test('should log for duplicate keys when `forgiving` is `"fix"', function (
     st
   ) {
     var stop = cept(console, 'log', hoist)
-    var params
+    var parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
@@ -265,11 +265,11 @@ test('Invalid objects', function(t) {
 
     stop()
 
-    st.equal(params[0], 'Ignoring duplicate key for `doge`')
+    st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
     st.end()
 
     function hoist() {
-      params = arguments
+      parameters = arguments
     }
   })
 

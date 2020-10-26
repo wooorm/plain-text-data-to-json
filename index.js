@@ -36,7 +36,7 @@ function toJson(value, options) {
 
   pairs = lines.map(toPropertyValuePairs(options.delimiter || ':'))
 
-  pairs.forEach(function(line, index) {
+  pairs.forEach(function (line, index) {
     var currentLineIsPropertyValuePair
 
     currentLineIsPropertyValuePair = line.length === 2
@@ -108,7 +108,7 @@ function toJson(value, options) {
 function propertyValuePairsToObject(pairs) {
   var values = {}
 
-  pairs.forEach(function(pair) {
+  pairs.forEach(function (pair) {
     values[pair[0]] = pair[1]
   })
 
@@ -129,7 +129,7 @@ function toPropertyValuePairs(token) {
     var values = value.split(token)
     var result = [trim(values.shift())]
 
-    if (values.length !== 0) {
+    if (values.length > 0) {
       result.push(trim(values.join(token)))
     }
 

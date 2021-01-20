@@ -253,25 +253,26 @@ test('Invalid objects', function (t) {
     'duplicate keys with different values'
   )
 
-  t.test('should log for duplicate keys when `forgiving` is `"fix"', function (
-    st
-  ) {
-    var stop = cept(console, 'log', hoist)
-    var parameters
+  t.test(
+    'should log for duplicate keys when `forgiving` is `"fix"',
+    function (st) {
+      var stop = cept(console, 'log', hoist)
+      var parameters
 
-    toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
-      forgiving: true
-    })
+      toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
+        forgiving: true
+      })
 
-    stop()
+      stop()
 
-    st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
-    st.end()
+      st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
+      st.end()
 
-    function hoist() {
-      parameters = arguments
+      function hoist() {
+        parameters = arguments
+      }
     }
-  })
+  )
 
   t.end()
 })

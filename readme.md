@@ -161,9 +161,9 @@ Some errors are thrown when malformed “plain-text” is found, such as:
 
 <!-- Definitions -->
 
-[build-badge]: https://img.shields.io/travis/wooorm/plain-text-data-to-json.svg
+[build-badge]: https://github.com/wooorm/plain-text-data-to-json/workflows/main/badge.svg
 
-[build]: https://travis-ci.org/wooorm/plain-text-data-to-json
+[build]: https://github.com/wooorm/plain-text-data-to-json/actions
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/wooorm/plain-text-data-to-json.svg
 

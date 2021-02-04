@@ -29,7 +29,13 @@ function toJson(value, options) {
   lines = value.split('\n')
 
   if (options.comment) {
-    lines = lines.map(stripComments(options.comment))
+    if (Array.isArray(options.comment)) {
+      options.comment.forEach( comment => {
+        lines = lines.map(stripComments(comment));
+      });
+    } else {
+      lines = lines.map(stripComments(options.comment))
+    }
   }
 
   lines = lines.map(trim).filter(Boolean)

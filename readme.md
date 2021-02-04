@@ -40,7 +40,7 @@ Specify your own:
 
 ###### `options.comment`
 
-Character to use for line-comments, `false` turns off comments (`string` or
+Character or a characters array to use for line-comments, `false` turns off comments (`string` or
 `boolean`, default: `'%'`)
 
 ###### `options.delimiter`

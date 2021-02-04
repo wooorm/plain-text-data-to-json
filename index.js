@@ -30,9 +30,9 @@ function toJson(value, options) {
 
   if (options.comment) {
     if (Array.isArray(options.comment)) {
-      options.comment.forEach( comment => {
-        lines = lines.map(stripComments(comment));
-      });
+      options.comment.forEach((comment) => {
+        lines = lines.map(stripComments(comment))
+      })
     } else {
       lines = lines.map(stripComments(options.comment))
     }

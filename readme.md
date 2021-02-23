@@ -40,8 +40,8 @@ Specify your own:
 
 ###### `options.comment`
 
-Character to use for line-comments, `false` turns off comments (`string` or
-`boolean`, default: `'%'`)
+Character(s) to use for line-comments, `false` turns off comments (`string`,
+`Array.<string>`, or `boolean`, default: `'%'`)
 
 ###### `options.delimiter`
 

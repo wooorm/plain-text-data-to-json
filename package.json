@@ -22,7 +22,7 @@
     "index.js"
   ],
   "dependencies": {
-    "trim": "1.0.0"
+    "trim": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "^17.0.0",

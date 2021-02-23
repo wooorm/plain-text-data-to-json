@@ -46,6 +46,14 @@ test('Comments', function (t) {
     'should strip partial comments based on a given token'
   )
 
+  t.deepEqual(
+    toJson('unicorn # 1\n% 2\ndoge', {
+      comment: ['#', '%']
+    }),
+    ['doge', 'unicorn'],
+    'should strip partial comments based on a given token'
+  )
+
   t.end()
 })
 

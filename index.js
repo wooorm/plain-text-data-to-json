@@ -13,6 +13,7 @@ function toJson(value, options) {
   var isPropertyValuePair
   var pairs
   var values
+  var comments
 
   if (!options) {
     options = {}
@@ -28,17 +29,15 @@ function toJson(value, options) {
 
   lines = value.split('\n')
 
-  if (options.comment) {
-    var comments = options.comment
-      ? Array.isArray(options.comment)
-        ? options.comment
-        : [options.comment]
-      : []
+  comments = options.comment
+    ? Array.isArray(options.comment)
+      ? options.comment
+      : [options.comment]
+    : []
 
-    comments.forEach(function (comment) {
-      lines = lines.map(stripComments(comment))
-    })
-  }
+  comments.forEach(function (comment) {
+    lines = lines.map(stripComments(comment))
+  })
 
   lines = lines.map(trim).filter(Boolean)
 

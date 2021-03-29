@@ -1,46 +1,67 @@
 var own = {}.hasOwnProperty
 
-// Transform a string into an array or object of values.
-export function toJson(value, options) {
+/**
+ * @typedef {Object} ToJsonOptions
+ * @property {boolean} [log=true]
+ * @property {string} [delimiter=':']
+ * @property {string[]|string|false} [comment='%']
+ * @property {boolean|'fix'} [forgiving]
+ */
+
+/**
+ * Transform a string into an array or object of values.
+ *
+ * @param {string} value
+ * @param {ToJsonOptions} [options={}]
+ */
+export function toJson(value, options = {}) {
+  var log =
+    options.log === null || options.log === undefined ? true : options.log
+  var comment =
+    options.comment === null || options.comment === undefined
+      ? '%'
+      : options.comment
+  var comments = comment ? (Array.isArray(comment) ? comment : [comment]) : []
+  var delimiter = options.delimiter || ':'
+  var forgiving = options.forgiving
   var propertyOrValues = {}
-  var lines
+  /** @type {boolean} */
   var isPropertyValuePair
+  /** @type {Array.<Array.<string>>} */
   var pairs
-  var values
-  var comments
 
-  if (!options) {
-    options = {}
-  }
+  var lines = value
+    .split('\n')
+    .map((line) => {
+      var commentIndex = -1
+      /** @type {number} */
+      var index
 
-  if (options.log === null || options.log === undefined) {
-    options.log = true
-  }
+      while (++commentIndex < comments.length) {
+        index = line.indexOf(comments[commentIndex])
+        if (index !== -1) line = line.slice(0, index)
+      }
 
-  if (options.comment === null || options.comment === undefined) {
-    options.comment = '%'
-  }
+      return line.trim()
+    })
+    .filter(Boolean)
 
-  lines = value.split('\n')
+  pairs = lines.map(
+    // Transform `value` to a property--value tuple.
+    function (value) {
+      var values = value.split(delimiter)
+      var result = [values.shift().trim()]
 
-  comments = options.comment
-    ? Array.isArray(options.comment)
-      ? options.comment
-      : [options.comment]
-    : []
+      if (values.length > 0) {
+        result.push(values.join(delimiter).trim())
+      }
 
-  comments.forEach(function (comment) {
-    lines = lines.map(stripComments(comment))
-  })
-
-  lines = lines.map((d) => d.trim()).filter(Boolean)
-
-  pairs = lines.map(toPropertyValuePairs(options.delimiter || ':'))
+      return result
+    }
+  )
 
   pairs.forEach(function (line, index) {
-    var currentLineIsPropertyValuePair
-
-    currentLineIsPropertyValuePair = line.length === 2
+    var currentLineIsPropertyValuePair = line.length === 2
 
     if (index === 0) {
       isPropertyValuePair = currentLineIsPropertyValuePair
@@ -56,8 +77,8 @@ export function toJson(value, options) {
 
     if (own.call(propertyOrValues, line[0])) {
       if (
-        !options.forgiving ||
-        (options.forgiving === true &&
+        !forgiving ||
+        (forgiving === true &&
           currentLineIsPropertyValuePair &&
           line[1] !== propertyOrValues[line[0]])
       ) {
@@ -71,11 +92,8 @@ export function toJson(value, options) {
         )
       }
 
-      if (options.log) {
-        if (
-          options.forgiving === 'fix' &&
-          propertyOrValues[line[0]] !== line[1]
-        ) {
+      if (log) {
+        if (forgiving === 'fix' && propertyOrValues[line[0]] !== line[1]) {
           console.log(
             'Overwriting `' +
               propertyOrValues[line[0]] +
@@ -97,59 +115,17 @@ export function toJson(value, options) {
 
   if (isPropertyValuePair) {
     pairs.sort(sortOnFirstIndex)
-    values = propertyValuePairsToObject(pairs)
-  } else {
-    lines.sort()
+    return Object.fromEntries(pairs)
   }
 
-  return values || lines
+  return lines.sort()
 }
 
-// Transform a list of property--value tuples to an object.
-function propertyValuePairsToObject(pairs) {
-  var values = {}
-
-  pairs.forEach(function (pair) {
-    values[pair[0]] = pair[1]
-  })
-
-  return values
-}
-
-// Sort on the first (`0`) index.
+/**
+ * Sort on the first (`0`) index.
+ * @param {Array.<string>} a
+ * @param {Array.<string>} b
+ */
 function sortOnFirstIndex(a, b) {
   return a[0].charCodeAt(0) - b[0].charCodeAt(0)
-}
-
-// Factory to transform lines to property--value tuples.
-function toPropertyValuePairs(token) {
-  return toPropValuePairs
-
-  // Transform `value` to a property--value tuple.
-  function toPropValuePairs(value) {
-    var values = value.split(token)
-    var result = [values.shift().trim()]
-
-    if (values.length > 0) {
-      result.push(values.join(token).trim())
-    }
-
-    return result
-  }
-}
-
-// Strip comments factory.
-function stripComments(token) {
-  return strip
-
-  // Strip comments.
-  function strip(value) {
-    var index = value.indexOf(token)
-
-    if (index !== -1) {
-      value = value.slice(0, index)
-    }
-
-    return value
-  }
 }

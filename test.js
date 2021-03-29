@@ -156,7 +156,8 @@ test('Invalid lists', function (t) {
 
   t.test('should log duplicate values when `forgiving`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var parameters
+    /** @type {Array.<unknown>} */
+    var parameters = []
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true})
 
@@ -166,12 +167,13 @@ test('Invalid lists', function (t) {
     st.end()
 
     function hoist() {
-      parameters = arguments
+      parameters = [...arguments]
     }
   })
 
   t.test('should honour `log: false`', function (st) {
     var stop = cept(console, 'log', hoist)
+    /** @type {Array.<unknown>} */
     var parameters
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
@@ -182,7 +184,7 @@ test('Invalid lists', function (t) {
     st.end()
 
     function hoist() {
-      parameters = arguments
+      parameters = [...arguments]
     }
   })
 
@@ -208,7 +210,8 @@ test('Invalid objects', function (t) {
 
   t.test('should log duplicate values when `forgiving`', function (st) {
     var stop = cept(console, 'log', hoist)
-    var parameters
+    /** @type {Array.<unknown>} */
+    var parameters = []
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
@@ -220,12 +223,13 @@ test('Invalid objects', function (t) {
     st.end()
 
     function hoist() {
-      parameters = arguments
+      parameters = [...arguments]
     }
   })
 
   t.test('should honour `log: false`', function (st) {
     var stop = cept(console, 'log', hoist)
+    /** @type {Array.<unknown>} */
     var parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
@@ -239,7 +243,7 @@ test('Invalid objects', function (t) {
     st.end()
 
     function hoist() {
-      parameters = arguments
+      parameters = [...arguments]
     }
   })
 
@@ -263,7 +267,8 @@ test('Invalid objects', function (t) {
     'should log for duplicate keys when `forgiving` is `"fix"',
     function (st) {
       var stop = cept(console, 'log', hoist)
-      var parameters
+      /** @type {Array.<unknown>} */
+      var parameters = []
 
       toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
         forgiving: true
@@ -275,7 +280,7 @@ test('Invalid objects', function (t) {
       st.end()
 
       function hoist() {
-        parameters = arguments
+        parameters = [...arguments]
       }
     }
   )

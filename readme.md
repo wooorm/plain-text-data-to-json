@@ -9,6 +9,9 @@ Transform a “database” / basic (word, phrase) list from plain text to JSON.
 
 ## Install
 
+This package is ESM only: Node 12+ is needed to use it and it must be `import`ed
+instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -30,7 +33,10 @@ fs.writeFileSync('output.json', JSON.stringify(data, null, 2) + '\n')
 
 ## API
 
-### `toJSON(value[, options])`
+This package exports the following identifiers: `toJson`.
+There is no default export.
+
+### `toJson(value[, options])`
 
 Transforms the given value (string) to JSON.
 Don’t like the default comment and property-value pair delimiters?

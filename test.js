@@ -1,8 +1,6 @@
-'use strict'
-
-var test = require('tape')
-var cept = require('cept')
-var toJson = require('.')
+import test from 'tape'
+import {cept} from 'cept'
+import {toJson} from './index.js'
 
 test('toJson', function (t) {
   t.equal(typeof toJson, 'function', 'should be a `function`')

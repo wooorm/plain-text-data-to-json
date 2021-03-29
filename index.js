@@ -1,13 +1,7 @@
-'use strict'
-
-var trim = require('trim')
-
-module.exports = toJson
-
 var own = {}.hasOwnProperty
 
 // Transform a string into an array or object of values.
-function toJson(value, options) {
+export function toJson(value, options) {
   var propertyOrValues = {}
   var lines
   var isPropertyValuePair
@@ -39,7 +33,7 @@ function toJson(value, options) {
     lines = lines.map(stripComments(comment))
   })
 
-  lines = lines.map(trim).filter(Boolean)
+  lines = lines.map((d) => d.trim()).filter(Boolean)
 
   pairs = lines.map(toPropertyValuePairs(options.delimiter || ':'))
 
@@ -134,10 +128,10 @@ function toPropertyValuePairs(token) {
   // Transform `value` to a property--value tuple.
   function toPropValuePairs(value) {
     var values = value.split(token)
-    var result = [trim(values.shift())]
+    var result = [values.shift().trim()]
 
     if (values.length > 0) {
-      result.push(trim(values.join(token)))
+      result.push(values.join(token).trim())
     }
 
     return result

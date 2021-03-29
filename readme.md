@@ -21,12 +21,12 @@ npm install plain-text-data-to-json
 ## Use
 
 ```js
-var fs = require('fs')
-var toJSON = require('plain-text-data-to-json')
+import fs from 'fs'
+import {toJson} from 'plain-text-data-to-json'
 
 var doc = fs.readFileSync('input.txt', 'utf8')
 
-var data = toJSON(doc)
+var data = toJson(doc)
 
 fs.writeFileSync('output.json', JSON.stringify(data, null, 2) + '\n')
 ```

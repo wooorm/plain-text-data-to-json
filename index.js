@@ -127,5 +127,5 @@ export function toJson(value, options = {}) {
  * @param {Array.<string>} b
  */
 function sortOnFirstIndex(a, b) {
-  return a[0].charCodeAt(0) - b[0].charCodeAt(0)
+  return a[0].codePointAt(0) - b[0].codePointAt(0)
 }

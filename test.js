@@ -1,26 +1,26 @@
-import test from 'tape'
+import assert from 'node:assert/strict'
+import test from 'node:test'
 import {cept} from 'cept'
 import {toJson} from './index.js'
 
-test('toJson', function (t) {
-  t.equal(typeof toJson, 'function', 'should be a `function`')
-  t.end()
+test('toJson', function () {
+  assert.equal(typeof toJson, 'function', 'should be a `function`')
 })
 
-test('Comments', function (t) {
-  t.deepEqual(
+test('Comments', function () {
+  assert.deepEqual(
     toJson(['% This is a completely commented line.', 'unicorn'].join('\n')),
     ['unicorn'],
     'should strip line comments'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn % This is a partially commented line.'),
     ['unicorn'],
     'should strip partial line comments'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn % This is a partially commented line.', {
       comment: false
     }),
@@ -28,7 +28,7 @@ test('Comments', function (t) {
     'should honour `comment: false`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson(['# This is a completely commented line.', 'unicorn'].join('\n'), {
       comment: '#'
     }),
@@ -36,7 +36,7 @@ test('Comments', function (t) {
     'should strip line comments based on a given token'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn # This is a partially commented line.', {
       comment: '#'
     }),
@@ -44,53 +44,45 @@ test('Comments', function (t) {
     'should strip partial comments based on a given token'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn # 1\n% 2\ndoge', {
       comment: ['#', '%']
     }),
     ['doge', 'unicorn'],
     'should strip partial comments based on a given token'
   )
-
-  t.end()
 })
 
-test('White space', function (t) {
-  t.deepEqual(
+test('White space', function () {
+  assert.deepEqual(
     toJson('  \tunicorn  \t'),
     ['unicorn'],
     'should trim prefixed and suffixed white space'
   )
-
-  t.end()
 })
 
-test('Blank lines', function (t) {
-  t.deepEqual(
+test('Blank lines', function () {
+  assert.deepEqual(
     toJson('\n  \t  \ndoge\n\nunicorn\r\n'),
     ['doge', 'unicorn'],
     'should remove empty / blank lines'
   )
-
-  t.end()
 })
 
-test('EOF', function (t) {
-  t.deepEqual(toJson('unicorn'), ['unicorn'], 'No EOL')
-  t.deepEqual(toJson('unicorn\n'), ['unicorn'], 'LF')
-  t.deepEqual(toJson('unicorn\r\n'), ['unicorn'], 'CR+LF')
-
-  t.end()
+test('EOF', function () {
+  assert.deepEqual(toJson('unicorn'), ['unicorn'], 'No EOL')
+  assert.deepEqual(toJson('unicorn\n'), ['unicorn'], 'LF')
+  assert.deepEqual(toJson('unicorn\r\n'), ['unicorn'], 'CR+LF')
 })
 
-test('Property-value pairs', function (t) {
-  t.deepEqual(
+test('Property-value pairs', function () {
+  assert.deepEqual(
     toJson('unicorn: magic creature'),
     {unicorn: 'magic creature'},
     'should support pair delimiters'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson(
       [
         'unicorn : magic creature',
@@ -106,41 +98,35 @@ test('Property-value pairs', function (t) {
     'white-space around pair delimiters'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn\tmagic creature', {delimiter: '\t'}),
     {unicorn: 'magic creature'},
     'given delimiters'
   )
-
-  t.end()
 })
 
-test('Values', function (t) {
-  t.deepEqual(toJson('unicorn'), ['unicorn'], 'one value')
+test('Values', function () {
+  assert.deepEqual(toJson('unicorn'), ['unicorn'], 'one value')
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn \n doge\n\trainbow'),
     ['doge', 'rainbow', 'unicorn'],
     'multiple values'
   )
-
-  t.end()
 })
 
-test('Mixed values', function (t) {
-  t.throws(
+test('Mixed values', function () {
+  assert.throws(
     function () {
       toJson('unicorn\nrainbow: double')
     },
     /^Error: Error at `rainbow,double`/,
     'should throw when both property-value pairs and values are provided'
   )
-
-  t.end()
 })
 
-test('Invalid lists', function (t) {
-  t.throws(
+test('Invalid lists', async function (t) {
+  assert.throws(
     function () {
       toJson('unicorn\nrainbow\nunicorn')
     },
@@ -148,13 +134,13 @@ test('Invalid lists', function (t) {
     'should throw when duplicate values exist'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true}),
     ['rainbow', 'unicorn', 'unicorn'],
     'should honour forgiving'
   )
 
-  t.test('should log duplicate values when `forgiving`', function (st) {
+  await t.test('should log duplicate values when `forgiving`', function () {
     const stop = cept(console, 'log', hoist)
     /** @type {Array<unknown>} */
     let parameters = []
@@ -163,15 +149,14 @@ test('Invalid lists', function (t) {
 
     stop()
 
-    st.equal(parameters[0], 'Ignoring duplicate key for `unicorn`')
-    st.end()
+    assert.equal(parameters[0], 'Ignoring duplicate key for `unicorn`')
 
     function hoist() {
       parameters = [...arguments]
     }
   })
 
-  t.test('should honour `log: false`', function (st) {
+  await t.test('should honour `log: false`', function () {
     const stop = cept(console, 'log', hoist)
     /** @type {Array<unknown>|undefined} */
     let parameters
@@ -180,19 +165,16 @@ test('Invalid lists', function (t) {
 
     stop()
 
-    st.equal(parameters, undefined)
-    st.end()
+    assert.equal(parameters, undefined)
 
     function hoist() {
       parameters = [...arguments]
     }
   })
-
-  t.end()
 })
 
-test('Invalid objects', function (t) {
-  t.throws(
+test('Invalid objects', async function (t) {
+  assert.throws(
     function () {
       toJson('doge: so scare\nunicorn: magic\ndoge: double')
     },
@@ -200,7 +182,7 @@ test('Invalid objects', function (t) {
     'should throw when duplicate values exist'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
     }),
@@ -208,7 +190,7 @@ test('Invalid objects', function (t) {
     'should honour forgiving'
   )
 
-  t.test('should log duplicate values when `forgiving`', function (st) {
+  await t.test('should log duplicate values when `forgiving`', function () {
     const stop = cept(console, 'log', hoist)
     /** @type {Array<unknown>} */
     let parameters = []
@@ -219,15 +201,14 @@ test('Invalid objects', function (t) {
 
     stop()
 
-    st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
-    st.end()
+    assert.equal(parameters[0], 'Ignoring duplicate key for `doge`')
 
     function hoist() {
       parameters = [...arguments]
     }
   })
 
-  t.test('should honour `log: false`', function (st) {
+  await t.test('should honour `log: false`', function () {
     const stop = cept(console, 'log', hoist)
     /** @type {Array<unknown>|undefined} */
     let parameters
@@ -239,15 +220,14 @@ test('Invalid objects', function (t) {
 
     stop()
 
-    st.equal(parameters, undefined)
-    st.end()
+    assert.equal(parameters, undefined)
 
     function hoist() {
       parameters = [...arguments]
     }
   })
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: 'fix'
     }),
@@ -255,7 +235,7 @@ test('Invalid objects', function (t) {
     "should honour `forgiving: 'fix'`"
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toJson('doge: so scare\nunicorn: magic creature\ndoge: rainbows\n', {
       forgiving: 'fix'
     }),
@@ -263,9 +243,9 @@ test('Invalid objects', function (t) {
     'duplicate keys with different values'
   )
 
-  t.test(
+  await t.test(
     'should log for duplicate keys when `forgiving` is `"fix"',
-    function (st) {
+    function () {
       const stop = cept(console, 'log', hoist)
       /** @type {Array<unknown>} */
       let parameters = []
@@ -276,14 +256,11 @@ test('Invalid objects', function (t) {
 
       stop()
 
-      st.equal(parameters[0], 'Ignoring duplicate key for `doge`')
-      st.end()
+      assert.equal(parameters[0], 'Ignoring duplicate key for `doge`')
 
       function hoist() {
         parameters = [...arguments]
       }
     }
   )
-
-  t.end()
 })

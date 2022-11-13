@@ -173,7 +173,7 @@ test('Invalid lists', function (t) {
 
   t.test('should honour `log: false`', function (st) {
     const stop = cept(console, 'log', hoist)
-    /** @type {Array<unknown>} */
+    /** @type {Array<unknown>|undefined} */
     let parameters
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
@@ -229,7 +229,7 @@ test('Invalid objects', function (t) {
 
   t.test('should honour `log: false`', function (st) {
     const stop = cept(console, 'log', hoist)
-    /** @type {Array<unknown>} */
+    /** @type {Array<unknown>|undefined} */
     let parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {

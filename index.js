@@ -24,6 +24,7 @@ export function toJson(value, options = {}) {
   const comments = comment ? (Array.isArray(comment) ? comment : [comment]) : []
   const delimiter = options.delimiter || ':'
   const forgiving = options.forgiving
+  /** @type {Record<string, unknown>} */
   const propertyOrValues = {}
 
   const lines = value
@@ -46,6 +47,7 @@ export function toJson(value, options = {}) {
     // Transform `value` to a property--value tuple.
     function (value) {
       const values = value.split(delimiter)
+      // @ts-expect-error: always one.
       const result = [values.shift().trim()]
 
       if (values.length > 0) {
@@ -56,7 +58,7 @@ export function toJson(value, options = {}) {
     }
   )
 
-  /** @type {boolean} */
+  /** @type {boolean|undefined} */
   let isPropertyValuePair
 
   for (const [index, line] of pairs.entries()) {
@@ -126,5 +128,6 @@ export function toJson(value, options = {}) {
  * @param {Array<string>} b
  */
 function sortOnFirstIndex(a, b) {
+  // @ts-expect-error: never empty
   return a[0].codePointAt(0) - b[0].codePointAt(0)
 }

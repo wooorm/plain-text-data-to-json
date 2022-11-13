@@ -155,9 +155,9 @@ test('Invalid lists', function (t) {
   )
 
   t.test('should log duplicate values when `forgiving`', function (st) {
-    var stop = cept(console, 'log', hoist)
-    /** @type {Array.<unknown>} */
-    var parameters = []
+    const stop = cept(console, 'log', hoist)
+    /** @type {Array<unknown>} */
+    let parameters = []
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true})
 
@@ -172,9 +172,9 @@ test('Invalid lists', function (t) {
   })
 
   t.test('should honour `log: false`', function (st) {
-    var stop = cept(console, 'log', hoist)
-    /** @type {Array.<unknown>} */
-    var parameters
+    const stop = cept(console, 'log', hoist)
+    /** @type {Array<unknown>} */
+    let parameters
 
     toJson('unicorn\nrainbow\nunicorn', {forgiving: true, log: false})
 
@@ -209,9 +209,9 @@ test('Invalid objects', function (t) {
   )
 
   t.test('should log duplicate values when `forgiving`', function (st) {
-    var stop = cept(console, 'log', hoist)
-    /** @type {Array.<unknown>} */
-    var parameters = []
+    const stop = cept(console, 'log', hoist)
+    /** @type {Array<unknown>} */
+    let parameters = []
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true
@@ -228,9 +228,9 @@ test('Invalid objects', function (t) {
   })
 
   t.test('should honour `log: false`', function (st) {
-    var stop = cept(console, 'log', hoist)
-    /** @type {Array.<unknown>} */
-    var parameters
+    const stop = cept(console, 'log', hoist)
+    /** @type {Array<unknown>} */
+    let parameters
 
     toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
       forgiving: true,
@@ -266,9 +266,9 @@ test('Invalid objects', function (t) {
   t.test(
     'should log for duplicate keys when `forgiving` is `"fix"',
     function (st) {
-      var stop = cept(console, 'log', hoist)
-      /** @type {Array.<unknown>} */
-      var parameters = []
+      const stop = cept(console, 'log', hoist)
+      /** @type {Array<unknown>} */
+      let parameters = []
 
       toJson('doge: so scare\nunicorn: magic creature\ndoge: so scare\n', {
         forgiving: true

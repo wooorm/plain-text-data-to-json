@@ -1,7 +1,7 @@
-var own = {}.hasOwnProperty
+const own = {}.hasOwnProperty
 
 /**
- * @typedef {Object} ToJsonOptions
+ * @typedef ToJsonOptions
  * @property {boolean} [log=true]
  * @property {string} [delimiter=':']
  * @property {string[]|string|false} [comment='%']
@@ -15,27 +15,23 @@ var own = {}.hasOwnProperty
  * @param {ToJsonOptions} [options={}]
  */
 export function toJson(value, options = {}) {
-  var log =
+  const log =
     options.log === null || options.log === undefined ? true : options.log
-  var comment =
+  const comment =
     options.comment === null || options.comment === undefined
       ? '%'
       : options.comment
-  var comments = comment ? (Array.isArray(comment) ? comment : [comment]) : []
-  var delimiter = options.delimiter || ':'
-  var forgiving = options.forgiving
-  var propertyOrValues = {}
-  /** @type {boolean} */
-  var isPropertyValuePair
-  /** @type {Array.<Array.<string>>} */
-  var pairs
+  const comments = comment ? (Array.isArray(comment) ? comment : [comment]) : []
+  const delimiter = options.delimiter || ':'
+  const forgiving = options.forgiving
+  const propertyOrValues = {}
 
-  var lines = value
+  const lines = value
     .split('\n')
     .map((line) => {
-      var commentIndex = -1
+      let commentIndex = -1
       /** @type {number} */
-      var index
+      let index
 
       while (++commentIndex < comments.length) {
         index = line.indexOf(comments[commentIndex])
@@ -46,11 +42,11 @@ export function toJson(value, options = {}) {
     })
     .filter(Boolean)
 
-  pairs = lines.map(
+  const pairs = lines.map(
     // Transform `value` to a property--value tuple.
     function (value) {
-      var values = value.split(delimiter)
-      var result = [values.shift().trim()]
+      const values = value.split(delimiter)
+      const result = [values.shift().trim()]
 
       if (values.length > 0) {
         result.push(values.join(delimiter).trim())
@@ -60,8 +56,11 @@ export function toJson(value, options = {}) {
     }
   )
 
-  pairs.forEach(function (line, index) {
-    var currentLineIsPropertyValuePair = line.length === 2
+  /** @type {boolean} */
+  let isPropertyValuePair
+
+  for (const [index, line] of pairs.entries()) {
+    const currentLineIsPropertyValuePair = line.length === 2
 
     if (index === 0) {
       isPropertyValuePair = currentLineIsPropertyValuePair
@@ -111,7 +110,7 @@ export function toJson(value, options = {}) {
     }
 
     propertyOrValues[line[0]] = line[1]
-  })
+  }
 
   if (isPropertyValuePair) {
     pairs.sort(sortOnFirstIndex)
@@ -123,8 +122,8 @@ export function toJson(value, options = {}) {
 
 /**
  * Sort on the first (`0`) index.
- * @param {Array.<string>} a
- * @param {Array.<string>} b
+ * @param {Array<string>} a
+ * @param {Array<string>} b
  */
 function sortOnFirstIndex(a, b) {
   return a[0].codePointAt(0) - b[0].codePointAt(0)

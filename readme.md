@@ -47,7 +47,7 @@ Specify your own:
 ###### `options.comment`
 
 Character(s) to use for line-comments, `false` turns off comments (`string`,
-`Array.<string>`, or `boolean`, default: `'%'`)
+`Array<string>`, or `boolean`, default: `'%'`)
 
 ###### `options.delimiter`
 

@@ -1,18 +1,32 @@
-const own = {}.hasOwnProperty
-
 /**
- * @typedef ToJsonOptions
- * @property {boolean} [log=true]
+ * @typedef Options
+ *   Configuration.
  * @property {string} [delimiter=':']
- * @property {string[]|string|false} [comment='%']
+ *   Character to use as delimiter between key/value pairs.
+ * @property {Array<string>|string|false} [comment='%']
+ *   Character(s) to use for line comments, `false` turns off comments.
  * @property {boolean|'fix'} [forgiving]
+ *   How relaxed to be.
+ *   When `true`, doesn’t throw for duplicate keys.
+ *   When `'fix'`, doesn’t throw for key/value pairs and overwrites.
+ * @property {boolean} [log=true]
+ *   Whether to log when `forgiving` ignores an error.
  */
 
 /**
- * Transform a string into an array or object of values.
+ * @typedef {Options} ToJsonOptions
+ *   Deprecated: please use `Options`.
+ */
+
+const own = {}.hasOwnProperty
+
+/**
+ * Transform basic plain-text lists or objects into arrays and objects.
  *
  * @param {string} value
- * @param {ToJsonOptions} [options={}]
+ *   Value to parse.
+ * @param {Options} [options]
+ *   Configuration (optional).
  */
 export function toJson(value, options = {}) {
   const log =
@@ -31,11 +45,9 @@ export function toJson(value, options = {}) {
     .split('\n')
     .map((line) => {
       let commentIndex = -1
-      /** @type {number} */
-      let index
 
       while (++commentIndex < comments.length) {
-        index = line.indexOf(comments[commentIndex])
+        const index = line.indexOf(comments[commentIndex])
         if (index !== -1) line = line.slice(0, index)
       }
 
@@ -47,6 +59,7 @@ export function toJson(value, options = {}) {
     // Transform `value` to a property--value tuple.
     function (value) {
       const values = value.split(delimiter)
+      /** @type {[string, undefined|string]} */
       // @ts-expect-error: always one.
       const result = [values.shift().trim()]
 
@@ -124,8 +137,8 @@ export function toJson(value, options = {}) {
 
 /**
  * Sort on the first (`0`) index.
- * @param {Array<string>} a
- * @param {Array<string>} b
+ * @param {[string, undefined|string]} a
+ * @param {[string, undefined|string]} b
  */
 function sortOnFirstIndex(a, b) {
   // @ts-expect-error: never empty
